@@ -7,6 +7,7 @@ __author__ = 'Tao Chengwei <staugurtcw@gmail.com>'
 
 import os
 import json
+import time
 from Tools.DB import DB
 from Tools.LOG import Syslog
 from flask import Flask, request, session, render_template, redirect, make_response, abort
@@ -27,12 +28,9 @@ def md5(s):
 # Index Page View
 @app.route('/')
 def index():
-    return render_template('blog.html')
-    if session.get('loggin_in', None):
-        client_ip = request.headers.get('X-Real-Ip', request.remote_addr)
-        return render_template('index.html')
-    else:
-        return redirect('/login')
+    year = time.strftime("%Y")
+    client_ip = request.headers.get('X-Real-Ip', request.remote_addr)
+    return render_template('home.html', year=year)
 
 # Login Auth
 @app.route('/login', methods = ["GET","POST"])
