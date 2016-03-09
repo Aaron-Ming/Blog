@@ -1,11 +1,11 @@
 #!/usr/bin/python -O
 #product environment start application with `tornado IOLoop` and `gevent server`
 
-from blog import app
-from Tools import Sdplog
-from config import Host, Port, Environment, ProcessName, ProductType
+from BLOG.blog import app
+from BLOG.Tools import LOG
+from BLOG.Tools.config import Host, Port, Environment, ProcessName, ProductType
 
-logger = Sdplog.getLogger()
+logger = LOG.Syslog.getLogger()
 
 try:
     import setproctitle
@@ -32,7 +32,8 @@ if Environment == 'product':
     else:
         logger.error('Start the program does not support with %s, abnormal exit!' %ProductType)
         exit(127)
+
     logger.info('RedisMI has been launched, %s:%d' %(Host, Port))
 
 else:
-    logger.info("%s isn't product, exit." % Environment)
+    logger.warn("%s isn't product, exit." % Environment)

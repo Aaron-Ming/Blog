@@ -5,10 +5,11 @@ import os
 import sys
 import config
 import torndb
-from LOG import Syslog
-logger = Syslog.getLogger()
+import LOG
 
-class DB:
+logger = LOG.Syslog.getLogger()
+
+class DB():
     
     """ 封装与操作常用的操作数据库，初始化数据库，相关工具等。 """
     def __init__(self):
@@ -31,7 +32,7 @@ class DB:
     def insert(self, sql):
         return self.dbc.execute(sql)
 
-    def delete(self, sql:)
+    def delete(self, sql):
         return self.dbc.execute(sql)
 
 if __name__ == "__main__":

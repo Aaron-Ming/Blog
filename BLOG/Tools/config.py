@@ -30,18 +30,6 @@ ProcessName:
     Custom process, you can see it with "ps aux|grep ProcessName".
 """
 
-ProductType = "tornado"
-"""
-ProductType:
-    生产环境启动方法，可选`gevent`与`tornado`,其中tornado log level是WARNNING，也就是低于WARN级别的日志不会打印或写入日志中。
-"""
-
-ApplicationHome = "/data/wwwroot/Blog"
-"""
-ApplicationHome:
-    应用代码存在目录，包含启动服务的脚本.
-"""
-
 Debug = True
 """
 Debug:
@@ -53,6 +41,18 @@ LogLevel = "DEBUG"
 """
 LogLevel:
     应用程序写日志级别，目前有DEBUG，INFO，WARNING，ERROR，CRITICAL
+"""
+
+ProductType = "tornado"
+"""
+ProductType:
+    生产环境启动方法，可选`gevent`与`tornado`,其中tornado log level是WARNNING，也就是低于WARN级别的日志不会打印或写入日志中。
+"""
+
+ApplicationHome = "/data/wwwroot/Blog"
+"""
+ApplicationHome:
+    应用代码存在目录，包含启动服务的脚本，生产环境配置。
 """
 
 MySQLConnection = {
