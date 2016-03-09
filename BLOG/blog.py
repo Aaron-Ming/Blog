@@ -32,6 +32,10 @@ def index():
     client_ip = request.headers.get('X-Real-Ip', request.remote_addr)
     return render_template('home.html', year=year)
 
+@app.route('/admin')
+def admin():
+    return render_template('admin/index.html')
+
 # Login Auth
 @app.route('/login', methods = ["GET","POST"])
 def login():
