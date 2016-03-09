@@ -6,8 +6,8 @@ __doc__ = 'Python Blog System for SIC(Team).'
 __author__ = 'Tao Chengwei <staugurtcw@gmail.com>'
 
 import os
-import json
 import time
+import json
 from Tools.DB import DB
 from Tools.LOG import Syslog
 from flask import Flask, request, session, render_template, redirect, make_response, abort
@@ -25,13 +25,20 @@ def md5(s):
     import hashlib
     return hashlib.md5(s).hexdigest()
 
-# Index Page View
+# BLOG UI
 @app.route('/')
 def index():
-    year = time.strftime("%Y")
-    client_ip = request.headers.get('X-Real-Ip', request.remote_addr)
-    return render_template('home.html', year=year)
+    return render_template('index.html')
 
+# User Home Page View
+@app.route('/home')
+def home():
+    if session.get('loggin_in'):
+        return render_template('home.html', year=time.strftime("%Y"))
+    else:
+        return redirect('/')
+
+# BLOG Admin System
 @app.route('/admin')
 def admin():
     return render_template('admin/index.html')
@@ -42,16 +49,12 @@ def login():
     error = None
     global username
     if request.method == "POST":
-        _username = request.form.get('username')
-        _password = request.form.get('password')
-        sql = 'select * from user where username="%s"' % _username
-        DBdata = mysql.get(sql)
-        username = DBdata.get('username')
-        password = DBdata.get('password') #md5 password
-        md5pass=md5(_password)
-        logger.debug(u"username:%s, password:%s, 加密后密码:%s, 数据库用户:%s, 数据库密码:%s" %(_username, _password, md5pass, username, password))
-        if md5pass == password:
-            if _username == username:
+        _user = request.form.get('username')
+        _pass = request.form.get('password')
+        _sql = 'select * from user where username="%s"' % _username
+        _data = mysql.get(sql)
+        if md5(_pass) == _data.get('password'):
+            if _user == _data.get('username'):
                 session['loggin_in'] = True
                 return redirect('/')
             else:

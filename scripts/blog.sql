@@ -27,8 +27,9 @@ CREATE TABLE `user` (
   `username` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `avatar `
-  `extra` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `avatar` varchar(300) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `url` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `extra` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -40,7 +41,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'admin','a900b539f038c8dfd15d20964074b926','staugur@saintic.com','Administrator');
+INSERT INTO `user` (id, username, password, email, url) VALUES (1,'admin','a900b539f038c8dfd15d20964074b926','staugur@saintic.com','www.saintic.com');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
