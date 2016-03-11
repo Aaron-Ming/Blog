@@ -12,6 +12,7 @@ SIC团队博客
 删除日志：DELETE /api/blog/:blog_id/
 创建用户：POST   /api/user
 获取用户：GET    /api/user
+删除用户: DELETE /api/user
 
 > 3. 前端页面
 
