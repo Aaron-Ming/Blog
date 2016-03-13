@@ -1,4 +1,3 @@
-#!/usr/bin/python -O
 # -*- coding:utf-8 -*-
 
 __version__ = '0.1'
@@ -28,10 +27,11 @@ def loggin_required(func):
         if session.get('loggin_in'):
             func()
         else:
-            return redirect(url_for('login'))
+            return redirect('/')
     return check
 
 def md5(s):
+    logger.debug([type(s), s])
     if not isinstance(s, (str, int, unicode)): raise
     return hashlib.md5(s).hexdigest()
 
@@ -46,7 +46,7 @@ def index():
         _pass = request.form.get('password')
         if _user == None or _pass == None:
             error = 'Invalid username or password'
-            return render_template('index.html', error=error)
+            return render_template('index.html', username=_user, error=error)
         sql = 'select * from user where username="%s"' % _user
         data = mysql.get(sql)
         if data == None:
@@ -60,14 +60,14 @@ def index():
                     error = 'Invalid username'
             else:
                 error = 'Invaild password'
-
+    logger.debug(_user)
     return render_template('index.html', error=error)
 
 # User Home Page View
-@app.route('/home')
+@app.route('/home/')
 @loggin_required
 def home():
-    return render_template('home.html', year=time.strftime("%Y"))
+    return render_template('home.html', username='陶成伟', year=time.strftime("%Y"))
 
 # Logout System
 @app.route('/logout')
@@ -128,11 +128,9 @@ def register(username, all=False):
     else:
         pass
 
-"""
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404.html')
-"""
 
 if __name__ == '__main__':
     # Start in dev and test environment
