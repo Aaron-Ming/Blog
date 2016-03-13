@@ -1,3 +1,4 @@
+#!/usr/bin/python -O
 # -*- coding:utf-8 -*-
 
 __version__ = '0.1'
@@ -36,38 +37,44 @@ def md5(s):
     return hashlib.md5(s).hexdigest()
 
 # BLOG Index Page View
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/')
 def index():
-    error = None
-    if request.method == "GET":
-        return render_template('index.html')
-    elif request.method == "POST":
-        _user = request.form.get('username')
-        _pass = request.form.get('password')
-        if _user == None or _pass == None:
-            error = 'Invalid username or password'
-            return render_template('index.html', username=_user, error=error)
-        sql = 'select * from user where username="%s"' % _user
-        data = mysql.get(sql)
-        if data == None:
-            error = 'Invalid username'
-        else:
-            if md5(_pass) == data.get('password'):
-                if _user == data.get('username'):
-                    session['loggin_in'] = True
-                    return redirect('/')
-                else:
-                    error = 'Invalid username'
-            else:
-                error = 'Invaild password'
-    logger.debug(_user)
-    return render_template('index.html', error=error)
+    return render_template('index.html')
 
 # User Home Page View
 @app.route('/home/')
 @loggin_required
 def home():
     return render_template('home.html', username='陶成伟', year=time.strftime("%Y"))
+
+@app.route('/login', methods = ["GET","POST"])
+def login():
+    error=None
+    if request.method == "GET":
+        if session.get('loggin_in'):
+            return redirect('/')
+        else:
+            return render_template('login.html')
+    elif request.method == "POST":
+        _user = request.form.get('username')
+        _pass = request.form.get('password')
+        if _user == None or _pass == None:
+            error = 'Invalid username or password'
+        else:
+            sql = 'select * from user where username="%s"' % _user
+            data = mysql.get(sql)
+            if data == None:
+                error = 'Invalid username'
+            else:
+                if md5(_pass) == data.get('password'):
+                    if _user == data.get('username'):
+                        session['loggin_in'] = True
+                        return redirect('/')
+                    else:
+                        error = 'Invalid username'
+                else:
+                    error = 'Invaild password'
+    return render_template('index.html', error=error)
 
 # Logout System
 @app.route('/logout')

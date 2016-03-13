@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>SaintIC Blog Login</title>
+<link href="/static/css/login.css" rel="stylesheet" type="text/css" media="all"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+<div class="login">
+    <h2>SaintIC Blog</h2>
+    <div class="login-top">
+      <!-- Login System -->
+      <form action='/login' method='POST'>
+        <input type="text" name="username" required>
+        <input type="password" name="password" required>
+	<div class="forgot">
+	  <a href="#">忘记密码</a>
+          <input type="submit" value="登录" >
+        </div>
+      </form>
+    </div>
+    <!-- register
+    <div class="login-bottom">
+        <h3>新用户 &nbsp;<a href="#">注册</a>&nbsp 这里</h3>
+    </div>
+    -->
+</div>	
+</body>
+</html>
