@@ -26,8 +26,10 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `cname` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `avatar` varchar(300) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `motto` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   `url` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `extra` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -41,7 +43,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` (id, username, password, email, url) VALUES (1,'admin','a900b539f038c8dfd15d20964074b926','staugur@saintic.com','www.saintic.com');
+INSERT INTO `user` (id, username, password, cname, email, motto, url) VALUES (1,'admin','a900b539f038c8dfd15d20964074b926','陶成伟','staugur@saintic.com','原谅我一生放荡不羁爱自由！','www.saintic.com');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

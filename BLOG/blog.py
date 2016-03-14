@@ -21,15 +21,7 @@ app.secret_key = os.urandom(24)
 # Define || Get something data
 mysql = DB()
 logger = Syslog.getLogger()
-
-def loggin_required(func):
-    @wraps(func)
-    def check():
-        if session.get('loggin_in'):
-            func()
-        else:
-            return redirect('/')
-    return check
+username = None
 
 def md5(s):
     logger.debug([type(s), s])
@@ -39,14 +31,22 @@ def md5(s):
 # BLOG Index Page View
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', username=username)
 
 # User Home Page View
-@app.route('/home/')
-@loggin_required
-def home():
-    return render_template('home.html', username='陶成伟', year=time.strftime("%Y"))
+@app.route('/home/<username>')
+def home(username):
+    if session.get('loggin_in'):
+        return render_template('home.html', username=username)
+    else:
+        return redirect('/')
 
+# Time Page View
+@app.route('/time')
+def time():
+    return render_template('time.html')
+
+# User Login Page View
 @app.route('/login', methods = ["GET","POST"])
 def login():
     error=None
@@ -66,17 +66,23 @@ def login():
             if data == None:
                 error = 'Invalid username'
             else:
-                if md5(_pass) == data.get('password'):
-                    if _user == data.get('username'):
+                username = data.get('username')
+                password = data.get('password')
+                global username
+                if md5(_pass) == password:
+                    if _user == username:
                         session['loggin_in'] = True
                         return redirect('/')
                     else:
                         error = 'Invalid username'
                 else:
                     error = 'Invaild password'
-    return render_template('index.html', error=error)
+        if error:
+            return render_template('login.html', error=error)
+        else:
+           return redirect('/')
 
-# Logout System
+# Logout System Page View
 @app.route('/logout')
 def logout():
     try:
@@ -86,7 +92,6 @@ def logout():
     return redirect('/')
 
 # API System
-
 # 用户API(Please add a class override default, return json)
 @app.route('/api/user/<username>', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def register(username, all=False):

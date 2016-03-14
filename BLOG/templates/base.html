@@ -12,6 +12,8 @@
 <!--[if lt IE 9]>
 <script src="/static/js/modernizr.js"></script>
 <![endif]-->
+<link href="http://oss.saintic.com/images/favicon.ico" rel="icon" type="image/x-icon" />
+<link href="http://oss.saintic.com/images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 {% block head %}{% endblock %}
 </head>
 <body>
@@ -21,13 +23,13 @@
   </div>
   <nav id="topnav" class="f_r">
     <ul>
-      <a href="/" target="_blank">首页</a>
-      <a href="#" target="_blank">文章</a>
-      <a href="#" target="_blank">心情</a>
+      <a href="/">首页</a>
+      <a href="#">文章</a>
+      <a href="#">心情</a>
       {% if not session.get('loggin_in') %}
         <a href="/login">登录</a>
       {% else %}
-        <a href="/home">个人中心</a>
+        <a href="/home/{{ username }}">个人中心</a>
         <a href="/logout">注销</a>
       {% endif %}
     </ul>

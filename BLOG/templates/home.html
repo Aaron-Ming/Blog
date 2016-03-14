@@ -17,7 +17,7 @@
         <!--头部-->
         <header class="home__header">
           <img alt="陶成伟" src="/static/images/profile.jpg"/>
-          <h1>陶成伟</h1><h2>原谅我一生放荡不羁爱自由！</h2>
+          <h1>{{ username }}</h1><h2>{{ motto }}</h2>
           <div class="home__header-social">
             <a href="http://facebook.com/" target="_blank">
               <svg class="icon icon-facebook">
@@ -66,14 +66,14 @@
         <!--导航页-->
         <nav class="home__header-nav">
           <ul>
-            <li><a href="/blog">Blog</a></li>
+            <li><a href="/">Index</a></li>
             <li><a href="http://github.com/saintic" target="_blank">Github</a></li>
             <li><a href="/about">About</a></li>
           </ul>
         </nav>
         <!--页脚-->
         <footer>
-          SaintIC © {{ year }}
+          SaintIC © 2016
           <a href="#" target="_blank">
             <svg class="icon icon-rss">
               <use xlink:href="#icon-rss"></use>

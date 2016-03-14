@@ -7,8 +7,8 @@ if [ $(whoami) != "root" ]; then
 fi
 
 BASE=$(cd `dirname $0` ; pwd)
-ProcessName=$(grep "ProcessName" ${BASE}/../config.py | grep -v ^$ | awk -F "ProcessName = " '{print $2}' | awk -F \" '{print $2}' | grep -v ^$)
-ApplicationHome=$(grep "ApplicationHome" ${BASE}/../config.py | grep -v ^$ | awk -F "ApplicationHome = " '{print $2}' | awk -F \" '{print $2}' | grep -v ^$)
+ProcessName=$(grep "ProcessName" ${BASE}/../BLOG/Tools/config.py | grep -v ^$ | awk -F "ProcessName = " '{print $2}' | awk -F \" '{print $2}' | grep -v ^$)
+ApplicationHome=$(grep "ApplicationHome" ${BASE}/../BLOG/Tools/config.py | grep -v ^$ | awk -F "ApplicationHome = " '{print $2}' | awk -F \" '{print $2}' | grep -v ^$)
 initd="/etc/init.d/blog"
 [ -z $ProcessName ] && ProcessName="blog"
 
@@ -25,9 +25,8 @@ app_name="ProcessName"
 basedir="ApplicationHome"
 
 #You can define file, but need permission.
-runtime=${basedir}
-pidfile="${runtime}/${app_name}.pid"
-logfile="${runtime}/sys.log"
+pidfile="/tmp/${app_name}.pid"
+logfile="${basedir}/sys.log"
 
 case $1 in
 start)
@@ -35,7 +34,7 @@ start)
         echo "$pidfile still exists..." ; exit 1
     else
         echo "Starting Application ${app_name}......"
-        $exec ${basedir}/Product_start.py &>> $logfile &
+        $exec ${basedir}/BLOG/Product_start.py &>> $logfile &
         pid=$!
         echo $pid > $pidfile
         PS=$(ps -A | awk '{print $1}' | grep -v PID | grep $pid | wc -l)&> /dev/null
