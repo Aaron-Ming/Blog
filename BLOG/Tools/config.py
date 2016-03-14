@@ -58,9 +58,9 @@ ApplicationHome:
 MySQLConnection = {
     "Host": '127.0.0.1',
     "Port": 3306,
-    "Database": 'devops',
-    "User": 'tcw',
-    "Passwd": 'passwd',
+    "Database": 'blog',
+    "User": 'root',
+    "Passwd": '123456',
     "Charset": 'utf8',
     "Timezone": '+8:00'
 }
