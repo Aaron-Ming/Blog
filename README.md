@@ -29,5 +29,9 @@ SIC团队博客
 
 注销页：GET /logout
 
-日志详情页：GET /blog/:blog_id
+日志详情页：GET /blog/:blog_id(通过API获取日志内容)
+
+## 协议
+
+MIT
 
