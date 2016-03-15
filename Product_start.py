@@ -20,6 +20,7 @@ if Environment == 'product':
     if ProductType == 'gevent':
         from gevent.wsgi import WSGIServer
         http_server = WSGIServer((Host, Port), app)
+        logger.info('RedisMI has been launched, %s:%d' %(Host, Port))
         http_server.serve_forever()
 
     elif ProductType == 'tornado':
@@ -28,12 +29,10 @@ if Environment == 'product':
         from tornado.ioloop import IOLoop
         http_server = HTTPServer(WSGIContainer(app))
         http_server.listen(Port)
+        logger.info('RedisMI has been launched, %s:%d' %(Host, Port))
         IOLoop.instance().start()
     else:
         logger.error('Start the program does not support with %s, abnormal exit!' %ProductType)
         exit(127)
-
-    logger.info('RedisMI has been launched, %s:%d' %(Host, Port))
-
 else:
     logger.warn("%s isn't product, exit." % Environment)
