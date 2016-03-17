@@ -1,0 +1,22 @@
+{% extends "base/user.html" %}
+{% block title %}SaintIC User Home for {{ username }}{% endblock %}
+{% block nav %}
+    {% if request.args.get('action') %}
+        <li><a href="{{ url_for('home', username=username) }}">返回个人中心</a></li>
+        {% if request.args.get('action') == "data" %}
+            {# 修改个人资料 #}
+            <form action="{{ url_for('api',username=username) }}" method="PUT">
+              姓名：<input type="text" name="cname" /><br />
+              邮箱：<input type="email" name="email" /><br />
+              格言：<input type="text" name="motto" /><br />
+              网址：<input type="text" name="url" /><br />
+              个人介绍：<textarea type="textarea" name="extra"></textarea>
+            </form>
+        {% endif %}
+    {% else %}
+        <li><a href="/">返回首页</a></li>
+        <li><a href="{{ url_for('home', username=username, action='data') }}">修改资料</a></li>
+        <li><a href="{{ url_for('home', username=username, action='avatar') }}">修改头像</a></li>
+        <li><a href="{{ url_for('home', username=username, action='passwd') }}">修改密码</a></li>
+    {% endif %}
+{% endblock %}

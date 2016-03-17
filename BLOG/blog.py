@@ -36,7 +36,7 @@ def home(username):
     if session.get('loggin_in'):
         sql="select * from user where username='%s'" % username
         logger.debug(mysql.get(sql))
-        return render_template('home.html', data=mysql.get(sql))
+        return render_template('user/home.html', data=mysql.get(sql), username=username)
     else:
         return redirect('/')
 
@@ -93,7 +93,7 @@ def logout():
 # API System
 # 用户API(Please add a class override default, return json)
 @app.route('/api/user/<username>', methods = ['GET', 'POST', 'PUT', 'DELETE'])
-def register(username, all=False):
+def api(username):
     #获取用户列表或具体用户
     if request.method == 'GET':
         try:
