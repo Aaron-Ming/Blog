@@ -19,7 +19,7 @@ SIC团队博客
 
 获取用户：GET    /api/user
 
-删除用户: DELETE /api/user
+删除用户：DELETE /api/user
 
 > 3.前端页面
 
