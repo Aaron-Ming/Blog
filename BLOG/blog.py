@@ -38,7 +38,7 @@ def home(username):
         logger.debug(mysql.get(sql))
         return render_template('user/home.html', data=mysql.get(sql), username=username)
     else:
-        return redirect('/')
+        return redirect(url_for('index'))
 
 # Time Page View
 @app.route('/time')
@@ -79,7 +79,7 @@ def login():
         if error:
             return render_template('login.html', error=error)
         else:
-           return redirect('/')
+           return redirect(url_for('index'))
 
 # Logout System Page View
 @app.route('/logout')
@@ -88,43 +88,86 @@ def logout():
         session.pop('loggin_in')
     except Exception:
         pass
-    return redirect('/')
+    return redirect(url_for('index'))
 
 # API System
 # 用户API(Please add a class override default, return json)
-@app.route('/api/user/<username>', methods = ['GET', 'POST', 'PUT', 'DELETE'])
-def api(username):
-    #获取用户列表或具体用户
+
+#获取用户列表或具体用户
+@app.route('/api/user/get/<username>')
+def user_get(username):
+    code=1
+    data=None
     if request.method == 'GET':
         try:
             username = request.json.get('username')
         except Exception:
             username = request.form.get('username')
-        if request.args.get('all', False):
-            sql="select * from user"
-        else:
-            sql="select * from user where username='%s'" % username
-        return json.dumps({'code':0, 'msg':mysql.get(sql)})
-    #创建用户
-    elif request.method == 'POST':
+        sql="select * from user where username='%s'" % username
+        data=mysql.get(sql)
+        if data:
+            code=0
+    return json.dumps({'code':code, 'data':data})
+
+#创建用户
+@app.route('/api/user/create/<username>', methods = ["GET", "POST"])
+def user_create(username):
+    code=1
+    data=None
+    if request.method == 'POST':
         try:
             username = request.json.get('username')
-            password= request.json.get('password')
+            password = request.json.get('password')
         except Exception:
             username = request.form.get('username')
             passport = request.form.get('passport')
 
         if mysql.get("select * from user where username='%s'" % username):
-            return json.dumps({'code':1, 'msg':'User already exists'})
+            code, data = 126, "User already exists"
         else:
             sql="insert into user (username, password) values('%s', '%s')" %(username, md5(password))
-            mysql.insert(sql)
-            return json.dumps({'code':0, 'username':username, 'state':'added'})
-    #更新用户
-    elif request.method == 'PUT':
-        pass
-    #删除用户
-    elif request.method == 'DELETE':
+            try:
+                mysql.insert(sql)
+            except Exception, e:
+                logger.error(e)
+                code, data = 127, "用户注册失败"
+            code, data = 0, username
+    return json.dumps({'code':code, 'data':data})
+
+#更新用户
+@app.route('/api/user/update/<username>', methods = ["GET", "POST"])
+def user_update(username):
+    if request.method == 'POST':
+        cname = request.form.get('cname',None)
+        email = request.form.get('email',None)
+        motto = request.form.get('motto',None)
+        url   = request.form.get('url',None)
+        extra = request.form.get('extra',None)
+        r={"cname":cname, 'email':email, 'motto':motto, 'url':url, 'extra':extra}
+        s=''
+        L=len(r)
+        for k,v in r.iteritems():
+            L-=1
+            if not v:
+                continue
+            if L == 0:
+                s+="%s='%s'" %(k,v)
+            else:
+                s+="%s='%s'," %(k,v)
+        sql="update user set %s where username='%s'" %(s, username)
+        logger.info(sql)
+        try:
+            mysql.update(sql)
+        except Exception, e:
+            logger.error(e)
+    return redirect(url_for('home',username=username))
+
+#删除用户
+@app.route('/api/user/update/<username>', methods = ["GET", "DELETE"])
+def user_del(username):
+    code=1
+    data=None
+    if request.method == 'DELETE':
         try:
             username = request.json.get('username')
         except Exception:

@@ -35,6 +35,9 @@ class DB():
     def delete(self, sql):
         return self.dbc.execute(sql)
 
+    def update(self, sql):
+        return self.dbc.execute(sql)
+
 if __name__ == "__main__":
     opts=[]
     s=''

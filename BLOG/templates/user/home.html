@@ -5,12 +5,14 @@
         <li><a href="{{ url_for('home', username=username) }}">返回个人中心</a></li>
         {% if request.args.get('action') == "data" %}
             {# 修改个人资料 #}
-            <form action="{{ url_for('api',username=username) }}" method="PUT">
+            <form action="{{ url_for('user_update',username=username) }}" method="POST">
               姓名：<input type="text" name="cname" /><br />
               邮箱：<input type="email" name="email" /><br />
               格言：<input type="text" name="motto" /><br />
               网址：<input type="text" name="url" /><br />
-              个人介绍：<textarea type="textarea" name="extra"></textarea>
+              个人介绍：<textarea type="textarea" name="extra"></textarea><br />
+              <input type="submit" value="提交" />
+              <input type="reset" value="重置" />
             </form>
         {% endif %}
     {% else %}
