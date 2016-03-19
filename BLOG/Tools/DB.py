@@ -39,9 +39,8 @@ class DB():
         return self.dbc.execute(sql)
 
 if __name__ == "__main__":
-    opts=[]
     s=''
-    d={'extra':'Hello', 'motto':None, 'email':'', 'url':''}
+    d={'cname':u'陶成伟','motto':'motto','email':'','extra':None}
     L=len(d)
     for k,v in d.iteritems():
         L-=1
@@ -51,6 +50,22 @@ if __name__ == "__main__":
             s+="%s='%s'" %(k,v)
         else:
             s+="%s='%s'," %(k,v)
-    sql="update user set %s where username='admin'" %s
-    #sql="update user set %s where username='admin'" %str(opts).split('[').split(']')
-    print sql
+    """
+    for k,v in d.iteritems():
+        L-=1
+        if L == 0:
+            if v:
+                s+="%s='%s'" %(k,v)
+            break
+        else:
+            if v:
+                s+="%s='%s'," %(k,v)
+            else:
+                continue
+    """
+    if s[-1] == ',':
+        t=s[0:len(s)-1]
+    print type(t),t
+    print type(s),s
+    #sql="update user set %s where username='admin'" %s
+    #print sql

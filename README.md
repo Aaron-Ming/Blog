@@ -15,11 +15,11 @@ SIC团队博客
 
 删除日志：DELETE /api/blog/:blog_id/
 
-创建用户：POST   /api/user
+创建用户：POST   /api/user/:username
 
-获取用户：GET    /api/user
+获取用户：GET    /api/user:username
 
-删除用户：DELETE /api/user
+删除用户：DELETE /api/user:username
 
 > 3.前端页面
 
@@ -29,9 +29,10 @@ SIC团队博客
 
 注销页：GET /logout
 
+时间轴：GET /time
+
 日志详情页：GET /blog/:blog_id(通过API获取日志内容)
 
 ## 协议
 
 MIT
-

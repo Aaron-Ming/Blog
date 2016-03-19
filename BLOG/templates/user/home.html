@@ -6,14 +6,47 @@
         {% if request.args.get('action') == "data" %}
             {# 修改个人资料 #}
             <form action="{{ url_for('user_update',username=username) }}" method="POST">
-              姓名：<input type="text" name="cname" /><br />
-              邮箱：<input type="email" name="email" /><br />
-              格言：<input type="text" name="motto" /><br />
-              网址：<input type="text" name="url" /><br />
-              个人介绍：<textarea type="textarea" name="extra"></textarea><br />
+              <p>姓名：<input type="text" name="cname" /></p>
+              <p>邮箱：<input type="email" name="email" /></p>
+              <p>格言：<input type="text" name="motto" /></p>
+              <p>网址：<input type="url" name="url" /></p>
+              <p>介绍：<input type="textarea" name="extra"/></p>
               <input type="submit" value="提交" />
               <input type="reset" value="重置" />
             </form>
+        {% elif request.args.get('action') == "avatar" %}
+            {# 修改头像 #}
+            <form action="{{ url_for('user_upload',username=username) }}" method="post" enctype="multipart/form-data">
+                <p>选择头像图片(仅支持jpg/jpeg/png/gif)：</p>
+                <p><input type="file" name="file" /><p />
+                <input type="submit" name="submit" value="提交" />
+            </form>
+        {% elif request.args.get('action') == "passwd" %}
+            {# 修改密码 #}
+            <form action="{{ url_for('user_passwd',username=username) }}" method="post">
+                <P>输入新密码： <input type="password" name="password" id="pw1" required /></P>
+                <p>重新输入密码： <input type="password" name="password" id="pw2" required onkeyup="validate()" /></p>
+                <p><span id="tishi"></span></p>
+                <p><input type="submit" value="提交" id="submit" />
+                <input type="reset" value="重置"/></p>
+            </form>
+            <script>
+                function validate() {
+                    var pw1 = document.getElementById("pw1").value;
+                    var pw2 = document.getElementById("pw2").value;
+                    if(pw1 == pw2) {
+                      document.getElementById("tishi").innerHTML="<font color='green'>两次密码相同</font>";
+                      document.getElementById("submit").disabled = false;
+                    } else {
+                      document.getElementById("tishi").innerHTML="<font color='red'>两次密码不相同</font>";
+                      document.getElementById("submit").disabled = true;
+                    }
+                    if(pw1.length<6 || pw2.length<6) {
+                      document.getElementById("tishi").innerHTML="<font color='red'>至少6位密码</font>";
+                      document.getElementById("submit").disabled = true;
+                    }
+                }
+            </script>
         {% endif %}
     {% else %}
         <li><a href="/">返回首页</a></li>
