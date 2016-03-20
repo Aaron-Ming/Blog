@@ -49,8 +49,11 @@ def home(username):
     if session.get('loggin_in'):
         sql="select * from user where username='%s'" % username
         data=mysql.get(sql)
+        shows={"cname":u"姓名", "url":u"网址", "motto":u"座右铭", "email":u"邮箱"}
+        #pk=[ x for x in map(change, [ k for k in data.keys() if k in shows ]) if x ]
+        #pv=[ data.get(y) for y in shows.keys() if y ]
         logger.debug(data)
-        return render_template('user/home.html', data=data, username=username)
+        return render_template('user/home.html', data=data, profile=shows, username=username)
     else:
         return redirect(url_for('index'))
 
@@ -104,20 +107,6 @@ def logout():
     return redirect(url_for('index'))
 
 # API System
-#获取用户列表或具体用户
-@app.route('/api/user/get/<username>')
-def user_get(username):
-    if request.method == 'GET':
-        try:
-            username = request.json.get('username')
-        except Exception:
-            username = request.form.get('username')
-        sql="select * from user where username='%s'" % username
-        data=mysql.get(sql)
-        if data:
-            code=0
-    return json.dumps({'code':code, 'data':data})
-
 #创建用户
 @app.route('/api/user/create/<username>', methods = ["GET", "POST"])
 def user_create(username):

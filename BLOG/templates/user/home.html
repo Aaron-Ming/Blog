@@ -2,8 +2,14 @@
 {% block title %}SaintIC User Home for {{ username }}{% endblock %}
 {% block nav %}
     {% if request.args.get('action') %}
-        <li><a href="{{ url_for('home', username=username) }}">返回个人中心</a></li>
-        {% if request.args.get('action') == "data" %}
+        <li><a href="{{ url_for('home', username=username) }}">返回个人中心</a></li><br />
+        {% if request.args.get('action') == "profile" %}
+            {# 查看资料 #}
+              <p><li>{{ profile['cname'] }}：{{ data['cname'] }}</li></p>
+              <p><li>{{ profile['email'] }}：{{ data['email'] }}</li></p>
+              <p><li>{{ profile['url'] }}：  {{ data['url'] }}</li></p>
+              <p><li>{{ profile['motto'] }}：{{ data['motto'] }}</li></p>
+        {% elif request.args.get('action') == "data" %}
             {# 修改个人资料 #}
             <form action="{{ url_for('user_update',username=username) }}" method="POST">
               <p>姓名：<input type="text" name="cname" /></p>
@@ -25,7 +31,7 @@
             {# 修改密码 #}
             <form action="{{ url_for('user_passwd',username=username) }}" method="post">
                 <P>输入新密码： <input type="password" name="password" id="pw1" required /></P>
-                <p>重新输入密码： <input type="password" name="password" id="pw2" required onkeyup="validate()" /></p>
+                <p>确认新密码： <input type="password" name="password" id="pw2" required onkeyup="validate()" /></p>
                 <p><span id="tishi"></span></p>
                 <p><input type="submit" value="提交" id="submit" />
                 <input type="reset" value="重置"/></p>
@@ -49,7 +55,11 @@
             </script>
         {% endif %}
     {% else %}
-        <li><a href="/">返回首页</a></li>
+        <li><a href="{{ url_for('index') }}">首页</a></li>
+        <li><a href="{{ url_for('home', username=username, action='profile') }}">我的资料</a></li>
+        <li><a href="{{ url_for('logout') }}">注销</a></li>
+        <p></p>
+        <li><a href="#">发表文章</a></li>
         <li><a href="{{ url_for('home', username=username, action='data') }}">修改资料</a></li>
         <li><a href="{{ url_for('home', username=username, action='avatar') }}">修改头像</a></li>
         <li><a href="{{ url_for('home', username=username, action='passwd') }}">修改密码</a></li>
