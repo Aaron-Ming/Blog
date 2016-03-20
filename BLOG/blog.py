@@ -28,6 +28,7 @@ app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 mysql = DB()
 logger = Syslog.getLogger()
 username = None
+msg = None
 
 # 用户密码加密函数
 def md5(s):
@@ -53,7 +54,7 @@ def home(username):
         #pk=[ x for x in map(change, [ k for k in data.keys() if k in shows ]) if x ]
         #pv=[ data.get(y) for y in shows.keys() if y ]
         logger.debug(data)
-        return render_template('user/home.html', data=data, profile=shows, username=username)
+        return render_template('user/home.html', data=data, profile=shows, username=username, msg=msg)
     else:
         return redirect(url_for('index'))
 
@@ -110,23 +111,23 @@ def logout():
 #创建用户
 @app.route('/api/user/create/<username>', methods = ["GET", "POST"])
 def user_create(username):
+    global msg
     if request.method == 'POST':
-        try:
-            username = request.json.get('username')
-            password = request.json.get('password')
-        except Exception:
-            username = request.form.get('username')
-            passport = request.form.get('passport')
+        new_username = request.form.get('new_username')
+        new_password = request.form.get('new_password')
 
-        if mysql.get("select * from user where username='%s'" % username):
-            code, data = 126, "User already exists"
+        if mysql.get("select * from user where username='%s'" % new_username):
+            msg = "Fail: User already exists!"
         else:
-            sql="insert into user (username, password) values('%s', '%s')" %(username, md5(password))
+            logger.warn(type(new_password))
+            logger.warn(new_password)
+            sql="insert into user (username, password) values('%s', '%s')" %(new_username, md5(new_password))
             try:
                 mysql.insert(sql)
             except Exception, e:
                 logger.error(e)
-    return json.dumps({'code':code, 'data':data})
+            msg="Success: Create User %s!" % new_username
+    return redirect(url_for('home',username=username,action='create'))
 
 #更新用户
 @app.route('/api/user/update/<username>', methods = ["GET", "POST"])
@@ -162,7 +163,6 @@ def user_update(username):
 @app.route('/api/user/upload/<username>', methods=['GET','POST'])
 def user_upload(username):
     if request.method == 'POST':
-        # Get the name of the uploaded file
         f = request.files['file']
         # Check if the file is one of the allowed types/extensions
         if f and allowed_file(f.filename):
@@ -206,24 +206,25 @@ def user_passwd(username):
     return redirect(url_for('home',username=username))
 
 #删除用户
-@app.route('/api/user/update/<username>', methods = ["GET", "DELETE"])
+@app.route('/api/user/delete/<username>', methods = ["GET", "POST"])
 def user_del(username):
-    code=1
-    data=None
-    if request.method == 'DELETE':
+    global msg
+    if request.method == 'POST':
         try:
-            username = request.json.get('username')
+            del_username = request.json.get('del_username')
         except Exception:
-            username = request.form.get('username')
-
-        if not username:
-            return json.dumps({'code':1, 'msg':'No such username'})
+            del_username = request.form.get('del_username')
+        if del_username == "admin":
+            msg="Fail: Not Allow admin"
         else:
-            sql="delete from usser where username='%s'" % username
-            mysql.delete(sql)
-            return json.dumps({'code':0, 'username':username, 'state':'deleted'})
-    else:
-        pass
+            sql="delete from user where username='%s'" % del_username
+            try:
+                mysql.delete(sql)
+            except Exception,e:
+                logger.error(e)
+            else:
+                msg="Success: Deleted User %s" % del_username
+    return redirect(url_for('home',username=username,action='delete'))
 
 @app.errorhandler(404)
 def not_found(error):
