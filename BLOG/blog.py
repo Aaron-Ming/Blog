@@ -49,7 +49,7 @@ def home(username):
     if session.get('loggin_in'):
         sql="select * from user where username='%s'" % username
         data=mysql.get(sql)
-        shows={"cname":u"姓名", "url":u"网址", "motto":u"座右铭", "email":u"邮箱"}
+        shows={"cname":u"姓名", "url":u"网址", "motto":u"座右铭", "email":u"邮箱", "extra":u"个人介绍"}
         #pk=[ x for x in map(change, [ k for k in data.keys() if k in shows ]) if x ]
         #pv=[ data.get(y) for y in shows.keys() if y ]
         logger.debug(data)

@@ -5,10 +5,21 @@
         <li><a href="{{ url_for('home', username=username) }}">返回个人中心</a></li><br />
         {% if request.args.get('action') == "profile" %}
             {# 查看资料 #}
-              <p><li>{{ profile['cname'] }}：{{ data['cname'] }}</li></p>
-              <p><li>{{ profile['email'] }}：{{ data['email'] }}</li></p>
-              <p><li>{{ profile['url'] }}：  {{ data['url'] }}</li></p>
-              <p><li>{{ profile['motto'] }}：{{ data['motto'] }}</li></p>
+              {% if data['cname'] %}
+                  <p><li>{{ profile['cname'] }}：{{ data['cname'] }}</li></p>
+              {% endif %}
+              {% if data['email'] %}
+                  <p><li>{{ profile['email'] }}：{{ data['email'] }}</li></p>
+              {% endif %}
+              {% if data['url'] %}
+                  <p><li>{{ profile['url'] }}：  {{ data['url'] }}</li></p>
+              {% endif %}
+              {% if data['motto'] %}
+                  <p><li>{{ profile['motto'] }}：{{ data['motto'] }}</li></p>
+              {% endif %}
+              {% if data['extra'] %}
+                  <p><li>{{ profile['extra'] }}：{{ data['extra'] }}</li></p>
+              {% endif %}
         {% elif request.args.get('action') == "data" %}
             {# 修改个人资料 #}
             <form action="{{ url_for('user_update',username=username) }}" method="POST">
