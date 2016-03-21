@@ -116,7 +116,7 @@ def user_create(username):
         new_username = request.form.get('new_username')
         new_password = request.form.get('new_password')
 
-        if mysql.get("select * from user where username='%s'" % new_username):
+        if mysql.get("select username from user where username='%s'" % new_username):
             msg = "Fail: User already exists!"
         else:
             logger.warn(type(new_password))
