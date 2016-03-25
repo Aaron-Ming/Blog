@@ -1,9 +1,9 @@
 #!/usr/bin/python -O
 #product environment start application with `tornado IOLoop` and `gevent server`
 
-from BLOG.blog import app
-from BLOG.Tools import LOG
-from BLOG.Tools.config import Host, Port, Environment, ProcessName, ProductType
+from src.blog import app
+from src.Tools import LOG
+from src.Tools.config import Host, Port, Environment, ProcessName, ProductType
 
 logger = LOG.Syslog.getLogger()
 

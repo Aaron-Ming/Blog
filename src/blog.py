@@ -1,4 +1,3 @@
-#!/usr/bin/python -O
 # -*- coding:utf-8 -*-
 
 __version__ = '0.1'
@@ -31,9 +30,7 @@ username = None
 msg = None
 
 # 用户密码加密函数
-def md5(s):
-    if not isinstance(s, (str, int, unicode)): raise
-    return hashlib.md5(s).hexdigest()
+md5 = lambda pwd:hashlib.md5(pwd).hexdigest()
 
 # 用户上传文件验证类型
 def allowed_file(filename):
@@ -225,6 +222,20 @@ def user_del(username):
             else:
                 msg="Success: Deleted User %s" % del_username
     return redirect(url_for('home',username=username,action='delete'))
+
+@app.route('/api/user/list/<username>')
+def user_list(username):
+    sql="select * from user where username='%s'" % (username)
+    try:
+        data=mysql.get(sql)
+    except Exception,e:
+        logger.error(e)
+    return json.dumps({"code":0, "data":data})
+
+
+@app.route('/ajax.html')
+def ajax():
+    return render_template('ajax.html')
 
 @app.errorhandler(404)
 def not_found(error):

@@ -2,13 +2,13 @@
 #init system service script
 
 if [ $(whoami) != "root" ]; then
-    echo "You don't have permission to run this script!"
+    echo "你需要以 root 身份执行此命令。"
     exit 1
 fi
 
 BASE=$(cd `dirname $0` ; pwd)
-ProcessName=$(grep "ProcessName" ${BASE}/../BLOG/Tools/config.py | grep -v ^$ | awk -F "ProcessName = " '{print $2}' | awk -F \" '{print $2}' | grep -v ^$)
-ApplicationHome=$(grep "ApplicationHome" ${BASE}/../BLOG/Tools/config.py | grep -v ^$ | awk -F "ApplicationHome = " '{print $2}' | awk -F \" '{print $2}' | grep -v ^$)
+ProcessName=$(grep "ProcessName" ${BASE}/../src/Tools/config.py | grep -v ^$ | awk -F "ProcessName = " '{print $2}' | awk -F \" '{print $2}' | grep -v ^$)
+ApplicationHome=$(grep "ApplicationHome" ${BASE}/../src/Tools/config.py | grep -v ^$ | awk -F "ApplicationHome = " '{print $2}' | awk -F \" '{print $2}' | grep -v ^$)
 initd="/etc/init.d/blog"
 [ -z $ProcessName ] && ProcessName="blog"
 
@@ -34,7 +34,7 @@ start)
         echo "$pidfile still exists..." ; exit 1
     else
         echo "Starting Application ${app_name}......"
-        $exec ${basedir}/BLOG/Product_start.py &>> $logfile &
+        $exec ${basedir}/src/Product_start.py &>> $logfile &
         pid=$!
         echo $pid > $pidfile
         PS=$(ps -A | awk '{print $1}' | grep -v PID | grep $pid | wc -l)&> /dev/null

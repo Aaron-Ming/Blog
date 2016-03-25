@@ -1,4 +1,3 @@
-#!/usr/bin/python -O
 #-*- coding:utf8 -*-
 
 import os
