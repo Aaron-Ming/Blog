@@ -237,6 +237,10 @@ def user_list(username):
 def ajax():
     return render_template('ajax.html')
 
+@app.route('/note.xml')
+def note():
+    return render_template('note.xml')
+
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404.html')

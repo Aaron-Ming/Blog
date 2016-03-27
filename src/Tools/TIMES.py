@@ -1,3 +1,7 @@
+#-*- coding:utf8 -*-
+
+import time
+import datetime
 # 定义datetime_filter，输入是t，输出是unicode字符串:
 def datetime_filter(t):
     delta = int(time.time() - t)
@@ -11,3 +15,5 @@ def datetime_filter(t):
         return u'%s天前' % (delta // 86400)
     dt = datetime.fromtimestamp(t)
     return u'%s年%s月%s日' % (dt.year, dt.month, dt.day)
+
+print datetime_filter(1)
