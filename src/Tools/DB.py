@@ -26,7 +26,12 @@ class DB():
             sys.exit(126)
 
     def get(self, sql):
-        return self.dbc.get(sql)
+        try:
+            data=self.dbc.get(sql)
+        except Exception,e:
+            logger.error(e)
+            data=self.dbc.query(sql)
+        return data
 
     def insert(self, sql):
         return self.dbc.execute(sql)

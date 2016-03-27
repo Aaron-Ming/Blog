@@ -39,7 +39,10 @@ def allowed_file(filename):
 # BLOG Index Page View
 @app.route('/')
 def index():
-    return render_template('index.html', username=username)
+    sql="select title,author,time,content,tag from blog"
+    data=mysql.get(sql)
+    logger.debug(data)
+    return render_template('index.html', username=username, blogs=data)
 
 # User Home Page View
 @app.route('/home/<username>')
@@ -51,6 +54,7 @@ def home(username):
         #pk=[ x for x in map(change, [ k for k in data.keys() if k in shows ]) if x ]
         #pv=[ data.get(y) for y in shows.keys() if y ]
         logger.debug(data)
+        #msg=dict,action=action
         return render_template('user/home.html', data=data, profile=shows, username=username, msg=msg)
     else:
         return redirect(url_for('index'))

@@ -33,19 +33,13 @@
             </form>
         {% elif request.args.get('action') == "avatar" %}
             {# 修改头像 #}
-            <form action="{{ url_for('user_upload',username=username) }}" method="post" enctype="multipart/form-data">
+            <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
+            <form id="avatar_form" action="{{ url_for('user_upload',username=username) }}" method="post" enctype="multipart/form-data">
                 <p>选择头像图片(仅支持jpg/jpeg/png/gif)：</p>
                 <p><input type="file" name="file" id="avatar" /><p />
-                <input type="submit" name="submit" onsubmit="return checkend()" value="提交" />
+                <input type="submit" name="submit" onsubmit="return lastname()" value="提交" />
                 <p><span id="tishi"></span></p>
             </form>
-            <script type="text/javascript">
-                var filename = document.getElementById('avatar').value;
-                if (!filename || !(filename.endsWith('.jpg') || filename.endsWith('.jpeg') || filename.endsWith('.png') || filename.endsWith('.gif'))) {
-                    document.getElementById('tishi').innerHTML('只有jpg、jpeg、png、gif的图片允许上传');
-                    return false;
-                }
-            </script>
         {% elif request.args.get('action') == "passwd" %}
             {# 修改密码 #}
             <form action="{{ url_for('user_passwd',username=username) }}" method="post">
@@ -101,6 +95,7 @@
         {% endif %}
         <li><a href="{{ url_for('logout') }}">注销</a></li>
         <p></p>
+        <li><a href="#">我的文章</a></li>
         <li><a href="#">发表文章</a></li>
         <li><a href="{{ url_for('home', username=username, action='data') }}">修改资料</a></li>
         <li><a href="{{ url_for('home', username=username, action='avatar') }}">修改头像</a></li>
