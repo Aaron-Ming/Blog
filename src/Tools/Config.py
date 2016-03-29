@@ -24,4 +24,4 @@ MYSQL['MySQLConnection']   = ParserConfigDict('mysql', 'MySQLConnection')
 
 if __name__ == "__main__":
     import json
-    print json.dumps(GLOBAL)
+    print json.dumps(MYSQL)

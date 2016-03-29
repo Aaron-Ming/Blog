@@ -14,7 +14,7 @@ class DB():
     def __init__(self):
         try:
             self.dbc = torndb.Connection(
-                           host=MySQLConnection.get('Host', '127.0.0.1') + ':' + str(MySQLConnection.get('Port', 3306)),
+                           host=MySQLConnection.get('Host') + ':' + str(MySQLConnection.get('Port', 3306)),
                            database=MySQLConnection.get('Database', None),
                            user=MySQLConnection.get('User', None),
                            password=MySQLConnection.get('Passwd', None),
