@@ -43,9 +43,9 @@
         {% elif request.args.get('action') == "passwd" %}
             {# 修改密码 #}
             <form action="{{ url_for('user_passwd',username=username) }}" method="post">
-                <P>输入新密码： <input type="password" name="password" id="pw1" required onkeyup="validate()" /></P>
+                <p>输入新密码： <input type="password" name="password" id="pw1" required /></p>
                 <p>确认新密码： <input type="password" name="password" id="pw2" required onkeyup="validate()" /></p>
-                <p><span id="tishi"></span></p>
+                <p><span id="tishi">{% if msg.get('action') == "passwd" %}{{ msg.get('msg') }}{% endif %}</span></p>
                 <p><input type="submit" value="提交" id="submit" />
                 <input type="reset" value="重置"/></p>
             </form>
@@ -66,6 +66,25 @@
                     }
                 }
             </script>
+        {% elif request.args.get('action') == "list" %}
+                <script type="text/javascript">
+                    function loadajax(url) {
+                        $.ajax({
+                        url: url,
+                        datatype: 'POST',
+                        success: function(response){
+                            console.log(response)
+                            document.getElementById('tishi').innerHTML=response;
+                            },
+                        error: function(error){
+                            alert(error);
+                            }
+                        });
+                    };
+                </script>
+            <p><button onclick="loadajax('{{ url_for('user_list', username=username) }}')">获取</button>
+            <p><span id="tishi"></span></p>
+
         {% elif request.args.get('action') == "create" %}
             {# 创建用户 #}
             <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
@@ -73,7 +92,7 @@
                 <P>用户账号： <input type="text" name="new_username" id="user" required /></P>
                 <P>初始密码： <input type="password" name="new_password" id="pw1" required onkeyup="checklong()" /></P>
                 <p>确认密码： <input type="password" name="new_password" id="pw2" required onkeyup="validate()" /></p>
-                <p><span id="tishi">{% if msg %}{{ msg }}{% endif %}</span></p>
+                <p><span id="tishi">{% if msg.get('action') == "create" %}{{ msg.get('msg') }}{% endif %}</span></p>
                 <p><input type="submit" value="提交" id="submit" />
                 <input type="reset" value="重置"/></p>
             </form>
@@ -81,7 +100,7 @@
             {# 删除用户 #}
             <form action="{{ url_for('user_del',username=username) }}" method="post">
                 <P>删除的用户账号： <input type="text" name="del_username" required /></P>
-                <p><span>{% if msg %}{{ msg }}{% endif %}</span></p>
+                <p><span id="tishi">{% if msg.get('action') == "delete" %}{{ msg.get('msg') }}{% endif %}</span></p>
                 <p><input type="submit" value="提交" id="submit" />
                 <input type="reset" value="重置"/></p>
             </form>
@@ -90,6 +109,7 @@
         <li><a href="{{ url_for('index') }}">首页</a></li>
         <li><a href="{{ url_for('home', username=username, action='profile') }}">我的资料</a></li>
         {% if username == "admin" %}
+            <li><a href="{{ url_for('home', username=username, action='list') }}">浏览用户</a></li>
             <li><a href="{{ url_for('home', username=username, action='create') }}">创建用户</a></li>
             <li><a href="{{ url_for('home', username=username, action='delete') }}">删除用户</a></li>
         {% endif %}

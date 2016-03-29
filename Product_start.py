@@ -2,25 +2,31 @@
 #product environment start application with `tornado IOLoop` and `gevent server`
 
 from src.blog import app
-from src.Tools import LOG
-from src.Tools.config import Host, Port, Environment, ProcessName, ProductType
+from src.Tools.LOG import Syslog
+from src.Tools.Config import GLOBAL,PRODUCT
 
-logger = LOG.Syslog.getLogger()
+Host = GLOBAL.get('Host')
+Port = GLOBAL.get('Port')
+Environment = GLOBAL.get('Environment')
+ProcessName = PRODUCT.get('ProcessName')
+ProductType = PRODUCT.get('ProductType')
+logger = Syslog.getLogger()
 
 try:
     import setproctitle
     if ProcessName:
         setproctitle.setproctitle(ProcessName)
-        logger.info("RedisMI is the process called %s" % ProcessName)
+        logger.info("The process is %s" % ProcessName)
 except ImportError, e:
-    logger.error('%s, try to pip install setproctitle' %e)
+    logger.warn('%s, try to pip install setproctitle' %e)
+    pass
 
 if Environment == 'product':
 
     if ProductType == 'gevent':
         from gevent.wsgi import WSGIServer
         http_server = WSGIServer((Host, Port), app)
-        logger.info('RedisMI has been launched, %s:%d' %(Host, Port))
+        logger.info('Blog has been launched, %s:%d' %(Host, Port))
         http_server.serve_forever()
 
     elif ProductType == 'tornado':
@@ -29,10 +35,10 @@ if Environment == 'product':
         from tornado.ioloop import IOLoop
         http_server = HTTPServer(WSGIContainer(app))
         http_server.listen(Port)
-        logger.info('RedisMI has been launched, %s:%d' %(Host, Port))
+        logger.info('Blog has been launched, %s:%d' %(Host, Port))
         IOLoop.instance().start()
     else:
         logger.error('Start the program does not support with %s, abnormal exit!' %ProductType)
         exit(127)
 else:
-    logger.warn("%s isn't product, exit." % Environment)
+    logger.error("%s isn't product, exit." % Environment)

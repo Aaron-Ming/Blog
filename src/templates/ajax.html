@@ -1,54 +1,31 @@
 <html>
 <head>
-<script type="text/javascript">
-var xmlhttp;
-function loadXMLDoc(url) {
-    var xmlhttp=null;
-    if (window.XMLHttpRequest) {
-        xmlhttp=new XMLHttpRequest();
-    } else if (window.ActiveXObject) {
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    if (xmlhttp!=null) {
-        xmlhttp.onreadystatechange=state_Change;
-        xmlhttp.open("GET",url,true);
-        xmlhttp.send(null);
-    } else {
-        alert("Your browser does not support XMLHTTP.");
-    }
-}
+ <script src="/static/js/jquery-1.9.0.js"></script>
+ <script src="/static/js/script.js"></script>
 
-function state_Change() {
-if (xmlhttp.readyState==4) {// 4 = "loaded"
-    if (xmlhttp.status==200) {// 200 = "OK"
-        document.getElementById('A1').innerHTML=xmlhttp.status;
-        document.getElementById('A2').innerHTML=xmlhttp.statusText;
-        document.getElementById('A3').innerHTML=xmlhttp.responseText;
-    } else {
-        alert("Problem retrieving XML data:" + xmlhttp.statusText);
-    }
-}
-}
-</script>
 </head>
 
 <body>
-<h2>Using the HttpRequest Object</h2>
-
-<p><b>Status:</b>
-<span id="A1"></span>
-</p>
-
-<p><b>Status text:</b>
-<span id="A2"></span>
-</p>
-
-<p><b>Response:</b>
-<br /><span id="A3"></span>
-</p>
-
-<button onclick="loadXMLDoc('/note.xml')">Get XML</button>
-
+<!--
+      <form class="form-signin"  role="form">
+        <h2 class="form-signin-heading">Please Sign Up</h2>
+        <button class="btn btn-lg btn-primary btn-block" type="button">Register</button>
+      </form>
+-->
+<button onclick="loadajax()">Get XML</button>
+<script>
+loadajax() {
+   $.ajax({
+       url: '/json',
+       success: function(response){
+                 alert(response);
+              },
+       error: function(error){
+                 alert(error);
+              }
+      });
+};
+</script>
 </body>
 </html>
 

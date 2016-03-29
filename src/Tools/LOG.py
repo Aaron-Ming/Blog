@@ -3,8 +3,9 @@
 import os
 import sys
 import logging.handlers
-from config import LogLevel as loglevel
+from Config import GLOBAL
 
+loglevel  = GLOBAL.get('LogLevel', "INFO")
 CODE_HOME = os.path.dirname(os.path.abspath(__file__))
 class Syslog:
 

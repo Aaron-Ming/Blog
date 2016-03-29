@@ -27,7 +27,7 @@ app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 mysql = DB()
 logger = Syslog.getLogger()
 username = None
-msg = None
+msg = {}
 
 # 用户密码加密函数
 md5 = lambda pwd:hashlib.md5(pwd).hexdigest()
@@ -54,8 +54,7 @@ def home(username):
         #pk=[ x for x in map(change, [ k for k in data.keys() if k in shows ]) if x ]
         #pv=[ data.get(y) for y in shows.keys() if y ]
         logger.debug(data)
-        #msg=dict,action=action
-        return render_template('user/home.html', data=data, profile=shows, username=username, msg=msg)
+        return render_template('home.html', data=data, profile=shows, username=username, msg=msg)
     else:
         return redirect(url_for('index'))
 
@@ -118,7 +117,7 @@ def user_create(username):
         new_password = request.form.get('new_password')
 
         if mysql.get("select username from user where username='%s'" % new_username):
-            msg = "Fail: User already exists!"
+            msg = {"action":"create", "msg":"Fail: User already exists!"}
         else:
             logger.warn(type(new_password))
             logger.warn(new_password)
@@ -127,8 +126,8 @@ def user_create(username):
                 mysql.insert(sql)
             except Exception, e:
                 logger.error(e)
-            msg="Success: Create User %s!" % new_username
-    return redirect(url_for('home',username=username,action='create'))
+            msg = {"action":"create", "msg":"Success: Create User %s!" % new_username}
+    return redirect(url_for('home', username=username, action='create'))
 
 #更新用户
 @app.route('/api/user/update/<username>', methods = ["GET", "POST"])
@@ -194,6 +193,7 @@ def user_upload(username):
 #修改密码
 @app.route('/api/user/passwd/<username>', methods = ["GET", "POST"])
 def user_passwd(username):
+    global msg
     #需要输入当前密码，与客户端交互。
     if session.get('loggin_in'):
         if request.method == 'POST':
@@ -204,7 +204,10 @@ def user_passwd(username):
                 mysql.update(sql)
             except Exception, e:
                 logger.error(e)
-    return redirect(url_for('home',username=username))
+                msg = {"action":"passwd","msg":"Modify password failed!"}
+            else:
+                msg = {"action":"passwd","msg":"Modify password success!"}
+    return redirect(url_for('home',username=username,action='passwd'))
 
 #删除用户
 @app.route('/api/user/delete/<username>', methods = ["GET", "POST"])
@@ -215,8 +218,11 @@ def user_del(username):
             del_username = request.json.get('del_username')
         except Exception:
             del_username = request.form.get('del_username')
+        sql="select * from user where username='%s'" % (del_username)
         if del_username == "admin":
-            msg="Fail: Not Allow admin"
+            msg = {"action":"delete","msg":"Fail: Not Allow admin"}
+        elif mysql.get(sql) == None:
+            msg = {"action":"delete","msg":"Fail: No username"}
         else:
             sql="delete from user where username='%s'" % del_username
             try:
@@ -224,34 +230,46 @@ def user_del(username):
             except Exception,e:
                 logger.error(e)
             else:
-                msg="Success: Deleted User %s" % del_username
-    return redirect(url_for('home',username=username,action='delete'))
+                msg = {"action":"delete", "msg":"Success: Deleted User %s" % del_username}
+    return redirect(url_for('home', username=username, action='delete'))
 
-@app.route('/api/user/list/<username>')
+#用户列表
+@app.route('/api/user/list/<username>', methods=['GET','POST'])
 def user_list(username):
-    sql="select * from user where username='%s'" % (username)
+    global msg
+    sql="select username from user"
     try:
         data=mysql.get(sql)
     except Exception,e:
         logger.error(e)
-    return json.dumps({"code":0, "data":data})
+        msg={"action":"list", "msg":e}
+    else:
+        msg={"action":"list", "msg":data}
+    return json.dumps(msg)
+    return redirect(url_for('home', username=username, action='list'))
 
+@app.route('/json',methods=['GET','POST'])
+def ajax():
+    if session.get('loggin_in'):
+        return json.dumps({'code':0, 'msg':'success'})
+    else:
+        return json.dumps({'code':1, 'msg':u'权限拒绝'})
 
 @app.route('/ajax.html')
-def ajax():
-    return render_template('ajax.html')
-
-@app.route('/note.xml')
 def note():
-    return render_template('note.xml')
+    return render_template('ajax.html')
 
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404.html')
 
 if __name__ == '__main__':
-    # Start in dev and test environment
-    from Tools.config import Host, Port, Environment, Debug
+    from Tools.Config import GLOBAL
+    Host = GLOBAL.get('Host')
+    Port = GLOBAL.get('Port')
+    Environment = GLOBAL.get('Environment')
+    Debug = GLOBAL.get('Debug')
+
     if Environment == "dev":
         app.run(host=Host, port=int(Port), debug=Debug)
     elif Environment == "super debug":
