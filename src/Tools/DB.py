@@ -72,4 +72,8 @@ if __name__ == "__main__":
     print type(s),s
     """
     sql="select username from user where username='tcw'"
-    print DB().get(sql)
+    sql="select title,author,time,content,tag from blog"
+    data = DB().get(sql)
+    print data
+    tags=[ d.get('tag') for d in data if d.get('tag') ]
+    print tags

@@ -26,11 +26,11 @@
       <a href="{{ url_for('index') }}">首页</a>
       <a href="{{ url_for('time') }}">分类</a>
       <a href="{{ url_for('time') }}">时间轴</a>
-      {% if not session.get('loggin_in') %}
-        <a href="{{ url_for('login') }}">登录</a>
-      {% else %}
+      {% if session.get('loggin_in') %}
         <a href="{{ url_for('home', username=username) }}">个人中心</a>
         <a href="{{ url_for('logout') }}">注销</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">登录</a>
       {% endif %}
     </ul>
     <script src="{{ url_for('static', filename='js/nav.js') }}"></script> 
@@ -40,89 +40,38 @@
   {% block content %}{% endblock %}
   <!--右侧-->
   <div class="r_box f_r">
+
     <div class="tit01">
       <h3>关注我</h3>
       <div class="gzwm">
         <ul>
           <li><a class="xlwb" href="#" target="_blank">新浪微博</a></li>
           <li><a class="txwb" href="#" target="_blank">腾讯微博</a></li>
-          <li><a class="rss" href="portal.php?mod=rss" target="_blank">RSS</a></li>
-          <li><a class="wx" href="mailto:admin@admin.com">邮箱</a></li>
+          <!--<li><a class="rss" href="portal.php?mod=rss" target="_blank">RSS</a></li>-->
+          <li><a class="wx" href="mailto:staugur@saintic.com">邮箱</a></li>
         </ul>
       </div>
     </div>
     <!--tit01 end-->
+
     <div class="ad300x100"> <img src="/static/images/ad300x100.jpg"></div>
-    <div class="moreSelect" id="lp_right_select"> 
-      <script type="text/javascript">
-window.onload = function ()
-{
-  var oLi = document.getElementById("tab").getElementsByTagName("li");
-  var oUl = document.getElementById("ms-main").getElementsByTagName("div");
-  
-  for(var i = 0; i < oLi.length; i++)
-  {
-    oLi[i].index = i;
-    oLi[i].onmouseover = function ()
-    {
-      for(var n = 0; n < oLi.length; n++) oLi[n].className="";
-      this.className = "cur";
-      for(var n = 0; n < oUl.length; n++) oUl[n].style.display = "none";
-      oUl[this.index].style.display = "block"
-    } 
-  }
-}
-</script>
-      <div class="ms-top">
-        <ul class="hd" id="tab">
-          <li class="cur"><a href="#">点击排行</li>
-          <li><a href="#">最新文章</a></li>
-          <li><a href="#">站长推荐</a></li>
-        </ul>
-      </div>
-      <div class="ms-main" id="ms-main">
-        <div style="display: block;" class="bd bd-news">
-          <ul>
-            <li><a href="/" target="_blank">点击排行de文章</a></li>
-          </ul>
-        </div>
-        <div  class="bd bd-news">
-          <ul>
-            <li><a href="/" target="_blank">最新文章de文章</a></li>
-          </ul>
-        </div>
-        <div class="bd bd-news">
-          <ul>
-            <li><a href="/" target="_blank">站长推荐de文章</a></li>
-          </ul>
-        </div>
-      </div>
-      <!--ms-main end --> 
-    </div>
-    <!--切换卡 moreSelect end -->
-    
+
     <div class="cloud">
       <h3>标签云</h3>
       <ul>
-        <li><a href="/">Html5+css3</a></li>
-        <li><a href="/">Javasript</a></li>
+        {% for tag in tags %}
+        <li><a href="#">{{ tag }}</li>
+        {% endfor %}
       </ul>
     </div>
-    <div class="tuwen">
-      <h3>图文推荐</h3>
-      <ul>
-        <li><a href="/"><img src="/static/images/01.jpg"><b>住在手机里的朋友</b></a>
-          <p><span class="tulanmu"><a href="/">手机配件</a></span><span class="tutime">2015-02-15</span></p>
-        </li>
-      </ul>
-    </div>
-    <div class="ad"> <img src="/static/images/03.jpg"> </div>
+    {% block right %}{% endblock %}
     <div class="links">
-      <h3><span>[<a href="/">申请友情链接</a>]</span>友情链接</h3>
+      <h3>友情链接&nbsp; <scan><a href="mailto:staugur@saintic.com">[申请友情链接]</a></span></h3>
       <ul>
-        <li><a href="/">杨青个人博客</a></li>
+        <li><a href="https://github.com/saintic/" target="_blank">GitHub</a></li>
       </ul>
     </div>
+
   </div>
   <!--r_box end --> 
 </article>
