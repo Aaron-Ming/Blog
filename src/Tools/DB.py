@@ -9,7 +9,7 @@ from Config import MYSQL
 logger = LOG.Syslog.getLogger()
 MySQLConnection = MYSQL.get('MySQLConnection')
 class DB():
-    
+
     """ 封装与操作常用的操作数据库，初始化数据库，相关工具等。 """
     def __init__(self):
         try:
