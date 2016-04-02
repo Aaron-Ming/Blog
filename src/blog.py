@@ -5,25 +5,23 @@ __doc__ = 'Python Blog System for SIC(Team).'
 __author__ = 'Tao Chengwei <staugurtcw@gmail.com>'
 
 import os
+import re
 import json
 import hashlib
+import random
+import datetime
 from Tools.DB import DB
 from Tools.LOG import Syslog
 from werkzeug import secure_filename
-from flask import Flask, request, session, render_template, redirect, url_for, send_from_directory
+from flask import Flask, request, session, render_template, redirect, url_for, send_from_directory, make_response
 
 # Init Flask App and Global Args
 app = Flask(__name__)
-# This is session secret
 app.secret_key = os.urandom(24)
-# This is the path to the upload directory
-app.config['UPLOAD_FOLDER'] = 'static/uploads/'
-# Limit file is 2M.
+app.config['UPLOAD_FOLDER'] = 'static/upload/'
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
-# These are the extension that we are accepting to be uploaded
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 
-# Define || Get something data
 mysql = DB()
 logger = Syslog.getLogger()
 username = None
@@ -35,6 +33,12 @@ md5 = lambda pwd:hashlib.md5(pwd).hexdigest()
 # 用户上传文件验证类型
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
+
+def gen_rnd_filename():
+    filename_prefix = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    return '%s%s' % (filename_prefix, str(random.randrange(1000, 10000)))
+
 
 # BLOG Index Page View
 @app.route('/')
@@ -52,8 +56,6 @@ def home(username):
         sql="select * from user where username='%s'" % username
         data=mysql.get(sql)
         shows={"cname":u"姓名", "url":u"网址", "motto":u"座右铭", "email":u"邮箱", "extra":u"个人介绍"}
-        #pk=[ x for x in map(change, [ k for k in data.keys() if k in shows ]) if x ]
-        #pv=[ data.get(y) for y in shows.keys() if y ]
         logger.debug(data)
         return render_template('home.html', data=data, profile=shows, username=username, msg=msg)
     else:
@@ -68,129 +70,50 @@ def time():
 @app.route('/home/blog/create')
 def create_blog():
     if session.get('loggin_in'):
-        return render_template('blog.html', username=username)
+        sql="select * from user where username='%s'" % username
+        data=mysql.get(sql)
+        return render_template('blog.html', username=username, data=data)
     else:
-       return redirect(url_for('index'))
+        return redirect(url_for('index'))
 
-@app.route('/upload', methods=['GET','POST','OPTIONS'])
-def upload():
-    """UEditor文件上传接口
 
-    config 配置文件
-    result 返回结果
-    """
-    mimetype = 'application/json'
-    result = {}
-    action = request.args.get('action')
+@app.route('/ckupload/', methods=['POST', 'OPTIONS'])
+def ckupload():
+    """CKEditor file upload"""
+    error = ''
+    url = ''
+    callback = request.args.get("CKEditorFuncNum")
 
-    # 解析JSON格式的配置文件
-    with open(os.path.join(app.static_folder, 'ueditor', 'php',
-                           'config.json')) as fp:
-        try:
-            # 删除 `/**/` 之间的注释
-            CONFIG = json.loads(re.sub(r'\/\*.*\*\/', '', fp.read()))
-        except:
-            CONFIG = {}
+    if request.method == 'POST' and 'upload' in request.files:
+        fileobj = request.files['upload']
+        fname, fext = os.path.splitext(fileobj.filename)
+        rnd_name = '%s%s' % (gen_rnd_filename(), fext)
 
-    if action == 'config':
-        # 初始化时，返回配置文件给客户端
-        result = CONFIG
+        filepath = os.path.join(app.static_folder, 'upload', rnd_name)
 
-    elif action in ('uploadimage', 'uploadfile', 'uploadvideo'):
-        # 图片、文件、视频上传
-        if action == 'uploadimage':
-            fieldName = CONFIG.get('imageFieldName')
-            config = {
-                "pathFormat": CONFIG['imagePathFormat'],
-                "maxSize": CONFIG['imageMaxSize'],
-                "allowFiles": CONFIG['imageAllowFiles']
-            }
-        elif action == 'uploadvideo':
-            fieldName = CONFIG.get('videoFieldName')
-            config = {
-                "pathFormat": CONFIG['videoPathFormat'],
-                "maxSize": CONFIG['videoMaxSize'],
-                "allowFiles": CONFIG['videoAllowFiles']
-            }
-        else:
-            fieldName = CONFIG.get('fileFieldName')
-            config = {
-                "pathFormat": CONFIG['filePathFormat'],
-                "maxSize": CONFIG['fileMaxSize'],
-                "allowFiles": CONFIG['fileAllowFiles']
-            }
+        # 检查路径是否存在，不存在则创建
+        dirname = os.path.dirname(filepath)
+        if not os.path.exists(dirname):
+            try:
+                os.makedirs(dirname)
+            except:
+                error = 'ERROR_CREATE_DIR'
+        elif not os.access(dirname, os.W_OK):
+            error = 'ERROR_DIR_NOT_WRITEABLE'
 
-        if fieldName in request.files:
-            field = request.files[fieldName]
-            uploader = Uploader(field, config, app.static_folder)
-            result = uploader.getFileInfo()
-        else:
-            result['state'] = '上传接口出错'
-
-    elif action in ('uploadscrawl'):
-        # 涂鸦上传
-        fieldName = CONFIG.get('scrawlFieldName')
-        config = {
-            "pathFormat": CONFIG.get('scrawlPathFormat'),
-            "maxSize": CONFIG.get('scrawlMaxSize'),
-            "allowFiles": CONFIG.get('scrawlAllowFiles'),
-            "oriName": "scrawl.png"
-        }
-        if fieldName in request.form:
-            field = request.form[fieldName]
-            uploader = Uploader(field, config, app.static_folder, 'base64')
-            result = uploader.getFileInfo()
-        else:
-            result['state'] = '上传接口出错'
-
-    elif action in ('catchimage'):
-        config = {
-            "pathFormat": CONFIG['catcherPathFormat'],
-            "maxSize": CONFIG['catcherMaxSize'],
-            "allowFiles": CONFIG['catcherAllowFiles'],
-            "oriName": "remote.png"
-        }
-        fieldName = CONFIG['catcherFieldName']
-
-        if fieldName in request.form:
-            # 这里比较奇怪，远程抓图提交的表单名称不是这个
-            source = []
-        elif '%s[]' % fieldName in request.form:
-            # 而是这个
-            source = request.form.getlist('%s[]' % fieldName)
-
-        _list = []
-        for imgurl in source:
-            uploader = Uploader(imgurl, config, app.static_folder, 'remote')
-            info = uploader.getFileInfo()
-            _list.append({
-                'state': info['state'],
-                'url': info['url'],
-                'original': info['original'],
-                'source': imgurl,
-            })
-
-        result['state'] = 'SUCCESS' if len(_list) > 0 else 'ERROR'
-        result['list'] = _list
-
+        if not error:
+            fileobj.save(filepath)
+            url = url_for('static', filename='%s/%s' % ('upload', rnd_name))
     else:
-        result['state'] = '请求地址出错'
+        error = 'post error'
 
-    result = json.dumps(result)
+    res = """<script type="text/javascript">
+  window.parent.CKEDITOR.tools.callFunction(%s, '%s', '%s');
+</script>""" % (callback, url, error)
 
-    if 'callback' in request.args:
-        callback = request.args.get('callback')
-        if re.match(r'^[\w_]+$', callback):
-            result = '%s(%s)' % (callback, result)
-            mimetype = 'application/javascript'
-        else:
-            result = json.dumps({'state': 'callback参数不合法'})
-
-    res = make_response(result)
-    res.mimetype = mimetype
-    res.headers['Access-Control-Allow-Origin'] = '*'
-    res.headers['Access-Control-Allow-Headers'] = 'X-Requested-With,X_Requested_With'
-    return res
+    response = make_response(res)
+    response.headers["Content-Type"] = "text/html"
+    return response
 
 
 # Login
@@ -239,6 +162,13 @@ def logout():
     return redirect(url_for('index'))
 
 # API System
+
+#创建博客
+@app.route('/api/blog/create/<username>', methods = ["GET", "POST"])
+def blog_create(username):
+    return redirect(url_for('home', username=username, action='blog_create'))
+
+
 #创建用户
 @app.route('/api/user/create/<username>', methods = ["GET", "POST"])
 def user_create(username):

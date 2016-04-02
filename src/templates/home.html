@@ -2,7 +2,9 @@
 {% block title %}SaintIC User Home for {{ username }}{% endblock %}
 {% block nav %}
     {% if request.args.get('action') %}
-        <li><a href="{{ url_for('home', username=username) }}">返回个人中心</a></li><br />
+        <li><a href="{{ url_for('home', username=username) }}">返回个人中心</a></li>
+        <li><a href="{{ url_for('logout') }}">注销</a></li><br />
+
         {% if request.args.get('action') == "profile" %}
             {# 查看资料 #}
               {% if data['cname'] %}
@@ -20,6 +22,7 @@
               {% if data['url'] %}
                   <p><li>{{ profile['url'] }}：<a href="{{ data['url'] }}" target="_blank">{{ data['url'] }}</a></li></p>
               {% endif %}
+
         {% elif request.args.get('action') == "data" %}
             {# 修改个人资料 #}
             <form action="{{ url_for('user_update',username=username) }}" method="POST">
@@ -27,10 +30,11 @@
               <p>邮箱：<input type="email" name="email" /></p>
               <p>格言：<input type="text" name="motto" /></p>
               <p>网址：<input type="url" name="url" /></p>
-              <p>介绍：<input type="textarea" name="extra"/></p>
+              <p>介绍：<textarea type="textarea" name="extra"></textarea></p>
               <input type="submit" value="提交" />
               <input type="reset" value="重置" />
             </form>
+
         {% elif request.args.get('action') == "avatar" %}
             {# 修改头像 #}
             <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
@@ -40,6 +44,7 @@
                 <input type="submit" name="submit" onsubmit="return lastname()" value="提交" />
                 <p><span id="tishi"></span></p>
             </form>
+
         {% elif request.args.get('action') == "passwd" %}
             {# 修改密码 #}
             <form action="{{ url_for('user_passwd',username=username) }}" method="post">
@@ -66,6 +71,7 @@
                     }
                 }
             </script>
+
         {% elif request.args.get('action') == "list" %}
                 <script type="text/javascript">
                     function loadajax(url) {
@@ -96,6 +102,7 @@
                 <p><input type="submit" value="提交" id="submit" />
                 <input type="reset" value="重置"/></p>
             </form>
+
         {% elif request.args.get('action') == "delete" %}
             {# 删除用户 #}
             <form action="{{ url_for('user_del',username=username) }}" method="post">
@@ -104,6 +111,7 @@
                 <p><input type="submit" value="提交" id="submit" />
                 <input type="reset" value="重置"/></p>
             </form>
+
         {% endif %}
     {% else %}
         <li><a href="{{ url_for('index') }}">首页</a></li>
