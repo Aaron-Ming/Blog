@@ -8,6 +8,8 @@ CKEDITOR.editorConfig = function( config ) {
 	// For complete reference see:
 	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
 
+        // file upload url
+        config.filebrowserUploadUrl = '/ckupload/';
 	// The toolbar groups arrangement, optimized for two toolbar rows.
 	config.toolbarGroups = [
 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
@@ -35,4 +37,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
+
+        // Enable local "abbr" plugin from /myplugins/abbr/ folder.
+        CKEDITOR.plugins.addExternal( 'codesnippet', '/static/ckeditor/codesnippet/', 'plugin.js' );
 };

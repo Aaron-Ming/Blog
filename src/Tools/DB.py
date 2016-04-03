@@ -29,7 +29,7 @@ class DB():
         try:
             data=self.dbc.get(sql)
         except Exception,e:
-            logger.error(e)
+            logger.warn(e)
             data=self.dbc.query(sql)
         return data
 
@@ -42,38 +42,12 @@ class DB():
     def update(self, sql):
         return self.dbc.execute(sql)
 
+    def execute(self, sql):
+        return self.dbc.execute(sql)
+
 if __name__ == "__main__":
-    """
-    s=''
-    d={'cname':u'陶成伟','motto':'motto','email':'','extra':None}
-    L=len(d)
-    for k,v in d.iteritems():
-        L-=1
-        if not v:
-            continue
-        if L == 0:
-            s+="%s='%s'" %(k,v)
-        else:
-            s+="%s='%s'," %(k,v)
-    for k,v in d.iteritems():
-        L-=1
-        if L == 0:
-            if v:
-                s+="%s='%s'" %(k,v)
-            break
-        else:
-            if v:
-                s+="%s='%s'," %(k,v)
-            else:
-                continue
-    if s[-1] == ',':
-        t=s[0:len(s)-1]
-    print type(t),t
-    print type(s),s
-    """
-    sql="select username from user where username='tcw'"
-    sql="select title,author,time,content,tag from blog"
-    data = DB().get(sql)
+    sql="select class from blog"
+    types = DB().get(sql)
+    print types
+    data = [ _type.get('class') for _type in types if _type.get('class')  ]
     print data
-    tags=[ d.get('tag') for d in data if d.get('tag') ]
-    print tags

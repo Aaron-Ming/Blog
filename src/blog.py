@@ -29,16 +29,15 @@ msg = {}
 
 # 用户密码加密函数
 md5 = lambda pwd:hashlib.md5(pwd).hexdigest()
-
 # 用户上传文件验证类型
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
-
-
+# 文本编辑器上传定义随机命名
 def gen_rnd_filename():
     filename_prefix = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     return '%s%s' % (filename_prefix, str(random.randrange(1000, 10000)))
-
+# 获取今天的日期
+today = lambda :datetime.datetime.now().strftime("%Y-%m-%d")
 
 # BLOG Index Page View
 @app.route('/')
@@ -67,23 +66,55 @@ def time():
     return render_template('time.html')
 
 # Blog and Upload
-@app.route('/home/blog/create')
+@app.route('/home/blog/create', methods=['GET','POST'])
 def create_blog():
     if session.get('loggin_in'):
+        #user persion data
         sql="select * from user where username='%s'" % username
-        data=mysql.get(sql)
-        return render_template('blog.html', username=username, data=data)
+        logger.info(sql)
+        userdata=mysql.get(sql)
+        logger.debug(userdata)
+
+        #blog class types
+        sql="select class from blog"
+        logger.info(sql)
+        types=mysql.get(sql)
+        logger.debug(types)
+        #classdata = [ _type.get('class') for _type in types if _type.get('class') ]
+        classdata = {}.fromkeys([ _type.get('class') for _type in types if _type.get('class') ]).keys()
+        logger.debug(classdata)
+
+        if request.method == "POST":
+            #get form data
+            #blogdata=request.form.items()
+            #logger.info(blogdata)
+            #blogdata=blogdata[0]
+            title     = request.form.get('title')
+            author    = username
+            time      = today()
+            content   = request.form.get('ckeditor')
+            tag       = request.form.get('tag')
+            classtype = request.form.get('type')
+            sql="insert into blog (title,author,time,content,tag,class) values('%s','%s','%s','%s','%s','%s')" %(title,author,time,content,tag,classtype)
+            logger.info(sql)
+            try:
+                mysql.insert(sql)
+            except AttributeError:
+                mysql.execute(sql)
+            except Exception,e:
+                logger.error(e)
+        return render_template('blog.html', username=username, data=userdata, types=classdata)
     else:
         return redirect(url_for('index'))
 
-
+"""
 @app.route('/ckupload/', methods=['POST', 'OPTIONS'])
 def ckupload():
-    """CKEditor file upload"""
+    logger.debug(u'开启ckeditor富文本编辑器')
+
     error = ''
     url = ''
     callback = request.args.get("CKEditorFuncNum")
-
     if request.method == 'POST' and 'upload' in request.files:
         fileobj = request.files['upload']
         fname, fext = os.path.splitext(fileobj.filename)
@@ -107,14 +138,17 @@ def ckupload():
     else:
         error = 'post error'
 
-    res = """<script type="text/javascript">
+    res = '''<script type="text/javascript">
   window.parent.CKEDITOR.tools.callFunction(%s, '%s', '%s');
-</script>""" % (callback, url, error)
+</script>''' % (callback, url, error)
 
     response = make_response(res)
     response.headers["Content-Type"] = "text/html"
-    return response
 
+    logger.debug(response)
+    logger.debug(u'结束ckeditor富文本编辑器')
+    return response
+"""
 
 # Login
 @app.route('/login', methods = ["GET","POST"])
