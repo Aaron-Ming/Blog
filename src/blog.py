@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
 
-__version__ = '0.1'
+__version__ = '0.2'
 __doc__ = 'Python Blog System for SIC(Team).'
-__author__ = 'Tao Chengwei <staugurtcw@gmail.com>'
+__author__ = 'TaoChengwei <staugurtcw@gmail.com>'
 
 import os
 import re
@@ -42,11 +42,14 @@ today = lambda :datetime.datetime.now().strftime("%Y-%m-%d")
 # BLOG Index Page View
 @app.route('/')
 def index():
+    global username
     sql="select title,author,time,content,tag from blog"
     data=mysql.get(sql)
+    #sql="select * from user where username='%s'" % username
+    #data1=mysql.get(sql)
     tags=[ d.get('tag') for d in data if d.get('tag') ]
     logger.debug(data)
-    return render_template('index.html', username=username, blogs=data, tags=tags)
+    return render_template('index/index.html', username=username, blogs=data, tags=tags)
 
 # User Home Page View
 @app.route('/home/<username>')
@@ -56,14 +59,9 @@ def home(username):
         data=mysql.get(sql)
         shows={"cname":u"姓名", "url":u"网址", "motto":u"座右铭", "email":u"邮箱", "extra":u"个人介绍"}
         logger.debug(data)
-        return render_template('home.html', data=data, profile=shows, username=username, msg=msg)
+        return render_template('user/home.html', data=data, profile=shows, username=username, msg=msg)
     else:
         return redirect(url_for('index'))
-
-# Time Page View
-@app.route('/time')
-def time():
-    return render_template('time.html')
 
 # Blog and Upload
 @app.route('/home/blog/create', methods=['GET','POST'])
@@ -103,52 +101,9 @@ def create_blog():
                 mysql.execute(sql)
             except Exception,e:
                 logger.error(e)
-        return render_template('blog.html', username=username, data=userdata, types=classdata)
+        return render_template('user/blog.html', username=username, data=userdata, types=classdata)
     else:
         return redirect(url_for('index'))
-
-"""
-@app.route('/ckupload/', methods=['POST', 'OPTIONS'])
-def ckupload():
-    logger.debug(u'开启ckeditor富文本编辑器')
-
-    error = ''
-    url = ''
-    callback = request.args.get("CKEditorFuncNum")
-    if request.method == 'POST' and 'upload' in request.files:
-        fileobj = request.files['upload']
-        fname, fext = os.path.splitext(fileobj.filename)
-        rnd_name = '%s%s' % (gen_rnd_filename(), fext)
-
-        filepath = os.path.join(app.static_folder, 'upload', rnd_name)
-
-        # 检查路径是否存在，不存在则创建
-        dirname = os.path.dirname(filepath)
-        if not os.path.exists(dirname):
-            try:
-                os.makedirs(dirname)
-            except:
-                error = 'ERROR_CREATE_DIR'
-        elif not os.access(dirname, os.W_OK):
-            error = 'ERROR_DIR_NOT_WRITEABLE'
-
-        if not error:
-            fileobj.save(filepath)
-            url = url_for('static', filename='%s/%s' % ('upload', rnd_name))
-    else:
-        error = 'post error'
-
-    res = '''<script type="text/javascript">
-  window.parent.CKEDITOR.tools.callFunction(%s, '%s', '%s');
-</script>''' % (callback, url, error)
-
-    response = make_response(res)
-    response.headers["Content-Type"] = "text/html"
-
-    logger.debug(response)
-    logger.debug(u'结束ckeditor富文本编辑器')
-    return response
-"""
 
 # Login
 @app.route('/login', methods = ["GET","POST"])
@@ -159,7 +114,7 @@ def login():
         if session.get('loggin_in'):
             return redirect('/')
         else:
-            return render_template('login.html')
+            return render_template('index/login.html')
     elif request.method == "POST":
         _user = request.form.get('username')
         _pass = request.form.get('password')
