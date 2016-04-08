@@ -1,17 +1,17 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="utf8">
-<title>{% block title %}{% endblock %}</title>
-<meta name="Keywords" content="SaintIC" >
-<meta name="Description" content="SaintIC" >
-<link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
-{% block head %}{% endblock %}
-<!--[if lt IE 9]>
-<script src="{{ url_for('static', filename='js/modernizr.js') }}"></script>
-<![endif]-->
-<link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon" />
-<link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="shortcut icon" type="image/x-icon" />
+    <meta charset="utf8">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="Keywords" content="SaintIC" >
+    <meta name="Description" content="SaintIC, blog, IT, Python, Shell, JS, CSS, HTML, 运维, 开发" >
+    <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
+    {% block head %}{% endblock %}
+    <!--[if lt IE 9]>
+        <script src="{{ url_for('static', filename='js/modernizr.js') }}"></script>
+    <![endif]-->
+    <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon" />
+    <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="shortcut icon" type="image/x-icon" />
 </head>
 <body>
 
@@ -28,80 +28,21 @@
        <li><a href="moodlist.html">碎言碎语</a></li>
        <li><a href="link.html">友情链接</a></li>
        <li><a href="msgboard.html">留言版</a></li>
+       {% if session.get('loggin_in') %}
+         {% if session.get('username') %}
+             <li><a href="{{ url_for('home', username=session.get('username')) }}">个人中心</a></li>
+         {% else %}
+             <li><a href="{{ url_for('home', username=username) }}">个人中心</a></li>
+         {% endif %}
+         <li><a href="{{ url_for('logout') }}">注销</a></li>
+       {% else %}
+         <li><a href="{{ url_for('login') }}">登录</a></li>
+       {% endif %}
      </ul>
 </div>
 
-<!--article start-->
 <div class="blank"></div>
-<!--正文开始-->
-<div class="article">
-  <div class="content">
-    <div class="topblog"><!--推荐文章-->
-      <h3><p><span>推荐</span>文章 Nominate</p></h3>
-      <img src="{{ url_for('static', filename='images/newpics.jpg') }}" title="" width="315" height="205">
-      <ul>
-        <li><a href="/">标题1<span>世界上最幸福的国家是...</span></a></li>
-        <li><a href="/">标题2<span>世界上最幸福的国家是...</span></a></li>
-        <li><a href="/">标题3<span>世界上最幸福的国家是...</span></a></li>
-      </ul>
-    </div> 
-
-    <div class="tags"><!--分类-->
-        <h2><span>博客</span>分类</h2>
-        <ul>
-          <li class="blogtype">分类</li>
-          <li><a href="/">div+css</a></li>
-          <li><a href="/">html5</a></li>
-        </ul>
-    </div>
-
-    <div class="tags"><!--标签-->
-        <h2><span>博客</span>标签</h2>
-        <ul>
-          <li class="blogtag">标签</li>
-          <li><a href="/">div+css</a></li>
-          <li><a href="/">html5</a></li>
-          <li><a href="/">saintic</a></li>
-        </ul>
-    </div>
-
-    <div class="bloglist"><!--博文-->
-        <!--An article begin-->
-        <h2><a href="/content/?383.html" target="_blank">文章标题1</a></h2>
-        <ul>
-          {{ test }}
-          <p class="readmore">
-              <a href="/content/?383.html" target="_blank">阅读全文>></a>
-          </p>
-          <p class="dateview">
-              <span>2013-05-11</span>
-              <span>作者：杨青</span>
-              <span>博客分类：<a href="#" target="_blank">心得笔记</a></span>
-              <span>博客标签：<a href="#" target="_blank">html5</a></span>
-              <span>阅读(229)</span><span>评论(124)</span>
-          </p>
-        </ul>
-        <!--Article end-->
-        <!--An article begin-->
-        <h2><a href="/content/?383.html" target="_blank">文章标题2</a></h2>
-        <ul>
-          文章内容
-          <p class="readmore">
-              <a href="/content/?383.html" target="_blank">阅读全文>></a>
-          </p>
-          <p class="dateview">
-              <span>2013-05-11</span>
-              <span>作者：杨青</span>
-              <span>博客分类：<a href="#" target="_blank">心得笔记</a></span>
-              <span>博客标签：<a href="#" target="_blank">html5</a></span>
-              <span>阅读(229)</span><span>评论(124)</span>
-          </p>
-        </ul>
-        <!--Article end-->
-    </div> 
-  </div>
-<!--正文结束-->
-
+{% block content %}{% endblock %}
 <aside class="navsidebar">
    <nav><!--右侧额外导航-->
       <ul>
@@ -175,7 +116,6 @@
    </div>
 </aside>
 </div>
-<!--article end-->
 
 <div id="fatfooter">
   <ul class="fat">

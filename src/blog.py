@@ -29,24 +29,24 @@ msg = {}
 
 # 用户密码加密函数
 md5 = lambda pwd:hashlib.md5(pwd).hexdigest()
+
+# 获取今天的日期
+today = lambda :datetime.datetime.now().strftime("%Y-%m-%d")
+
 # 用户上传文件验证类型
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
 # 文本编辑器上传定义随机命名
 def gen_rnd_filename():
     filename_prefix = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     return '%s%s' % (filename_prefix, str(random.randrange(1000, 10000)))
-# 获取今天的日期
-today = lambda :datetime.datetime.now().strftime("%Y-%m-%d")
 
 # BLOG Index Page View
 @app.route('/')
 def index():
-    global username
     sql="select title,author,time,content,tag from blog"
     data=mysql.get(sql)
-    #sql="select * from user where username='%s'" % username
-    #data1=mysql.get(sql)
     tags=[ d.get('tag') for d in data if d.get('tag') ]
     logger.debug(data)
     return render_template('index/index.html', username=username, blogs=data, tags=tags)
@@ -61,7 +61,7 @@ def home(username):
         logger.debug(data)
         return render_template('user/home.html', data=data, profile=shows, username=username, msg=msg)
     else:
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
 
 # Blog and Upload
 @app.route('/home/blog/create', methods=['GET','POST'])
@@ -112,9 +112,10 @@ def login():
     global username
     if request.method == "GET":
         if session.get('loggin_in'):
-            return redirect('/')
+	    #Now should get request url and return that.
+            return redirect(url_for('index'))
         else:
-            return render_template('index/login.html')
+            return render_template('user/login.html')
     elif request.method == "POST":
         _user = request.form.get('username')
         _pass = request.form.get('password')
@@ -131,21 +132,23 @@ def login():
                 if md5(_pass) == password:
                     if _user == username:
                         session['loggin_in'] = True
-                        return redirect('/')
+                        session['username'] = username
+                        return redirect(url_for('index'))
                     else:
                         error = 'Invalid username'
                 else:
                     error = 'Invaild password'
         if error:
-            return render_template('login.html', error=error)
+            return render_template('user/login.html', error=error)
         else:
-           return redirect(url_for('index'))
+            return redirect(url_for('index'))
 
 # Logout System Page View
 @app.route('/logout')
 def logout():
     try:
         session.pop('loggin_in')
+        session.pop('username')
     except Exception:
         pass
     return redirect(url_for('index'))
@@ -307,11 +310,11 @@ def ajax():
 
 @app.route('/ajax.html')
 def note():
-    return render_template('ajax.html')
+    return render_template('public/ajax.html')
 
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('404.html')
+    return render_template('public/404.html')
 
 if __name__ == '__main__':
     from Tools.Config import GLOBAL
