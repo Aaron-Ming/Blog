@@ -301,17 +301,6 @@ def user_list(username):
     return json.dumps(msg)
     return redirect(url_for('home', username=username, action='list'))
 
-@app.route('/json',methods=['GET','POST'])
-def ajax():
-    if session.get('loggin_in'):
-        return json.dumps({'code':0, 'msg':'success'})
-    else:
-        return json.dumps({'code':1, 'msg':u'权限拒绝'})
-
-@app.route('/ajax.html')
-def note():
-    return render_template('public/ajax.html')
-
 @app.errorhandler(404)
 def not_found(error):
     return render_template('public/404.html')

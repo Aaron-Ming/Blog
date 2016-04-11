@@ -75,16 +75,27 @@
         {% elif request.args.get('action') == "list" %}
                 <script type="text/javascript">
                     function loadajax(url) {
+                        /*
                         $.ajax({
                         url: url,
-                        datatype: 'POST',
-                        success: function(response){
-                            console.log(response)
-                            document.getElementById('tishi').innerHTML=response;
+                        method: 'POST',
+                        datatype: 'json',
+                        success: function(res){
+                            console.log(typeof(res));
+                            document.getElementById('tishi').innerHTML=res;
                             },
                         error: function(error){
                             alert(error);
                             }
+                        });
+                        */
+                        $.getJSON(url).done(function (data) {
+                            var user = new Array();
+                            for(i=0; i<data.msg.length; i++) {
+                                console.log(data.msg[i].username);
+                                user[i]=data.msg[i].username;
+                            };
+                            document.getElementById('tishi').innerHTML=user; 
                         });
                     };
                 </script>
