@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
 
-__version__ = '0.1'
+__version__ = '0.2'
 __doc__ = 'Python Blog System for SIC(Team).'
-__author__ = 'Tao Chengwei <staugurtcw@gmail.com>'
+__author__ = 'TaoChengwei <staugurtcw@gmail.com>'
 
 import os
 import re
@@ -29,15 +29,18 @@ msg = {}
 
 # 用户密码加密函数
 md5 = lambda pwd:hashlib.md5(pwd).hexdigest()
+
+# 获取今天的日期
+today = lambda :datetime.datetime.now().strftime("%Y-%m-%d")
+
 # 用户上传文件验证类型
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
 # 文本编辑器上传定义随机命名
 def gen_rnd_filename():
     filename_prefix = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     return '%s%s' % (filename_prefix, str(random.randrange(1000, 10000)))
-# 获取今天的日期
-today = lambda :datetime.datetime.now().strftime("%Y-%m-%d")
 
 # BLOG Index Page View
 @app.route('/')
@@ -46,7 +49,7 @@ def index():
     data=mysql.get(sql)
     tags=[ d.get('tag') for d in data if d.get('tag') ]
     logger.debug(data)
-    return render_template('index.html', username=username, blogs=data, tags=tags)
+    return render_template('index/index.html', username=username, blogs=data, tags=tags)
 
 # User Home Page View
 @app.route('/home/<username>')
@@ -56,14 +59,9 @@ def home(username):
         data=mysql.get(sql)
         shows={"cname":u"姓名", "url":u"网址", "motto":u"座右铭", "email":u"邮箱", "extra":u"个人介绍"}
         logger.debug(data)
-        return render_template('home.html', data=data, profile=shows, username=username, msg=msg)
+        return render_template('user/home.html', data=data, profile=shows, username=username, msg=msg)
     else:
-        return redirect(url_for('index'))
-
-# Time Page View
-@app.route('/time')
-def time():
-    return render_template('time.html')
+        return redirect(url_for('login'))
 
 # Blog and Upload
 @app.route('/home/blog/create', methods=['GET','POST'])
@@ -103,52 +101,9 @@ def create_blog():
                 mysql.execute(sql)
             except Exception,e:
                 logger.error(e)
-        return render_template('blog.html', username=username, data=userdata, types=classdata)
+        return render_template('user/blog.html', username=username, data=userdata, types=classdata)
     else:
         return redirect(url_for('index'))
-
-"""
-@app.route('/ckupload/', methods=['POST', 'OPTIONS'])
-def ckupload():
-    logger.debug(u'开启ckeditor富文本编辑器')
-
-    error = ''
-    url = ''
-    callback = request.args.get("CKEditorFuncNum")
-    if request.method == 'POST' and 'upload' in request.files:
-        fileobj = request.files['upload']
-        fname, fext = os.path.splitext(fileobj.filename)
-        rnd_name = '%s%s' % (gen_rnd_filename(), fext)
-
-        filepath = os.path.join(app.static_folder, 'upload', rnd_name)
-
-        # 检查路径是否存在，不存在则创建
-        dirname = os.path.dirname(filepath)
-        if not os.path.exists(dirname):
-            try:
-                os.makedirs(dirname)
-            except:
-                error = 'ERROR_CREATE_DIR'
-        elif not os.access(dirname, os.W_OK):
-            error = 'ERROR_DIR_NOT_WRITEABLE'
-
-        if not error:
-            fileobj.save(filepath)
-            url = url_for('static', filename='%s/%s' % ('upload', rnd_name))
-    else:
-        error = 'post error'
-
-    res = '''<script type="text/javascript">
-  window.parent.CKEDITOR.tools.callFunction(%s, '%s', '%s');
-</script>''' % (callback, url, error)
-
-    response = make_response(res)
-    response.headers["Content-Type"] = "text/html"
-
-    logger.debug(response)
-    logger.debug(u'结束ckeditor富文本编辑器')
-    return response
-"""
 
 # Login
 @app.route('/login', methods = ["GET","POST"])
@@ -157,9 +112,10 @@ def login():
     global username
     if request.method == "GET":
         if session.get('loggin_in'):
-            return redirect('/')
+	    #Now should get request url and return that.
+            return redirect(url_for('index'))
         else:
-            return render_template('login.html')
+            return render_template('user/login.html')
     elif request.method == "POST":
         _user = request.form.get('username')
         _pass = request.form.get('password')
@@ -176,21 +132,23 @@ def login():
                 if md5(_pass) == password:
                     if _user == username:
                         session['loggin_in'] = True
-                        return redirect('/')
+                        session['username'] = username
+                        return redirect(url_for('index'))
                     else:
                         error = 'Invalid username'
                 else:
                     error = 'Invaild password'
         if error:
-            return render_template('login.html', error=error)
+            return render_template('user/login.html', error=error)
         else:
-           return redirect(url_for('index'))
+            return redirect(url_for('index'))
 
 # Logout System Page View
 @app.route('/logout')
 def logout():
     try:
         session.pop('loggin_in')
+        session.pop('username')
     except Exception:
         pass
     return redirect(url_for('index'))
@@ -343,20 +301,9 @@ def user_list(username):
     return json.dumps(msg)
     return redirect(url_for('home', username=username, action='list'))
 
-@app.route('/json',methods=['GET','POST'])
-def ajax():
-    if session.get('loggin_in'):
-        return json.dumps({'code':0, 'msg':'success'})
-    else:
-        return json.dumps({'code':1, 'msg':u'权限拒绝'})
-
-@app.route('/ajax.html')
-def note():
-    return render_template('ajax.html')
-
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('404.html')
+    return render_template('public/404.html')
 
 if __name__ == '__main__':
     from Tools.Config import GLOBAL

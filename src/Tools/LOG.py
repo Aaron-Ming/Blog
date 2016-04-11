@@ -18,7 +18,7 @@ class Syslog:
         "CRITICAL" : logging.CRITICAL}
 
     log_level = loglevel
-    log_file = os.path.join(os.path.dirname(CODE_HOME), '../sys.log')
+    log_file = os.path.join(os.path.dirname(CODE_HOME), 'logs', 'sys.log')
     log_max_byte = 10 * 1024 * 1024;
     log_backup_count = 5
     log_datefmt = '%Y-%m-%d %H:%M:%S'
