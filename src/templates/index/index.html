@@ -1,0 +1,147 @@
+﻿{% extends "base/index.html" %}
+{% block title %}SaintIC Team Blog Indexer{% endblock %}
+{% block head %}
+    <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<!--正文开始-->
+<div class="article">
+  <div class="content">
+    <div class="topblog"><!--推荐文章-->
+      <h3><p><span>推荐</span>文章 Nominate</p></h3>
+      <img src="{{ url_for('static', filename='images/newpics.jpg') }}" title="" width="315" height="205">
+      <ul>
+        <li><a href="/">标题1<span>世界上最幸福的国家是...</span></a></li>
+        <li><a href="/">标题2<span>世界上最幸福的国家是...</span></a></li>
+        <li><a href="/">标题3<span>世界上最幸福的国家是...</span></a></li>
+      </ul>
+    </div> 
+
+    <div class="tags"><!--分类-->
+        <h2><span>博客</span>分类</h2>
+        <ul>
+          <li class="blogtype">分类</li>
+          <li><a href="/">div+css</a></li>
+          <li><a href="/">html5</a></li>
+        </ul>
+    </div>
+
+    <div class="tags"><!--标签-->
+        <h2><span>博客</span>标签</h2>
+        <ul>
+          <li class="blogtag">标签</li>
+          <li><a href="/">div+css</a></li>
+          <li><a href="/">html5</a></li>
+          <li><a href="/">saintic</a></li>
+        </ul>
+    </div>
+
+    <div class="bloglist"><!--博文-->
+        <!--An article begin-->
+        <h2><a href="/content/?383.html" target="_blank">文章标题1</a></h2>
+        <ul>
+          {{ test }}
+          <p class="readmore">
+              <a href="/content/?383.html" target="_blank">阅读全文>></a>
+          </p>
+          <p class="dateview">
+              <span>2013-05-11</span>
+              <span>作者：杨青</span>
+              <span>博客分类：<a href="#" target="_blank">心得笔记</a></span>
+              <span>博客标签：<a href="#" target="_blank">html5</a></span>
+              <span>阅读(229)</span><span>评论(124)</span>
+          </p>
+        </ul>
+        <!--An article begin-->
+        <h2><a href="/content/?383.html" target="_blank">文章标题2</a></h2>
+        <ul>
+          文章内容
+          <p class="readmore">
+              <a href="/content/?383.html" target="_blank">阅读全文>></a>
+          </p>
+          <p class="dateview">
+              <span>2013-05-11</span>
+              <span>作者：杨青</span>
+              <span>博客分类：<a href="#" target="_blank">心得笔记</a></span>
+              <span>博客标签：<a href="#" target="_blank">html5</a></span>
+              <span>阅读(229)</span><span>评论(124)</span>
+          </p>
+        </ul>
+    </div> 
+  </div>
+<!--正文结束-->
+{% endblock %}
+{% block aside %}
+<aside class="navsidebar">
+   <nav><!--右侧额外导航-->
+      <ul>
+       <li class="ab"><a href="#">关于我</a></li>
+       <li class="sy"><a href="#">碎言碎语</a></li>
+       <li class="js"><a href="#">技术探讨</a></li>
+       <li class="ly"><a href="#">留言版</a></li>
+       <li class="msh"><a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=HHh9cn95b3F1cHVye1xtbTJ-c3E" title="有话对我说">有话对我说</a></li>
+       <li class="xc"><a target="_blank" href="#" title="rss订阅">RSS</a></li>
+     </ul>
+   </nav>
+
+   <div class="geyan"><!--右侧导航栏下格言-->
+    <ul id="slider" class="slider">  
+      <li>个人or团队 格言1</li>
+    </ul>
+   </div>
+
+   <div class="vcard"><!--右侧导航栏下格言下个人or团队介绍-->
+      <a href="#" target="_blank"><img src="{{ url_for('static', filename='images/photo.jpg') }}" class="photo" height="124" width="93"></a>
+      <p class="fn">姓名：杨青</p>
+      <p class="nickname">网名：DanceSmile | 即步非烟</p>
+      <p class="url">主页：www.yangqq.com</p>
+      <p class="address">现居：天津市—滨海新区</p>
+      <p class="role">职业：网站设计、网站制作</p>
+   </div>
+   <br/>
+
+   <div class="newbolg"><!--最新推荐-->
+      <h2>最新日志</h2>
+      <ul class="rank">
+        <li class="nh1"><i></i><a target="_blank" href="#">大理双廊小村：避世绝尘的慢生活</a></li>     
+        <li class="nh2"><i></i><a target="_blank" href="#">外媒评十大正在消失的世界遗产 中国长城上榜</a></li>     
+        <li class="nh3"><i></i><a target="_blank" href="#">沙漠里的奇葩 探秘鄂尔多斯财富迷局</a></li>     
+        <!--<li class="n4"><i></i><a></a></li>-->
+      </ul>
+   </div>
+
+   <div class="hotcomm"><!--最新评论-->
+     <h2>评论大区</h2>
+     <ul>         
+        <li><a title="不要在上司肩上哭泣" href="#" target="_blank">[欣赏]不要在上司肩上哭泣</a></li>  
+        <li><a title="房前种菜，屋后栽花" href="#" target="_blank">[欣赏]房前种菜，屋后栽花</a></li>  
+     </ul>    
+   </div>
+
+   <div class="share"><!--分享按钮-->
+    <h2></h2>
+      <p><!-- Baidu Button BEGIN -->
+      <div id="bdshare" class="bdshare_t bds_tools_32 get-codes-bdshare">
+        <a class="bds_tsina"></a>
+        <a class="bds_qzone"></a>
+        <a class="bds_tqq"></a>
+        <a class="bds_renren"></a>
+        <span class="bds_more"></span>
+        <a class="shareCount"></a>
+      </div>
+      <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=6574585" ></script>
+      <script type="text/javascript" id="bdshell_js"></script>
+      <script type="text/javascript">
+        document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+      </script>
+      <!-- Baidu Button END --></p>
+   </div>
+
+   <div class="visitors"><!--注册用户访问记录-->
+      <h2>最近访客</h2>
+      <ul>
+      visitor1, visitor2
+      </ul>
+   </div>
+</aside>
+{% endblock %}

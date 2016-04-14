@@ -1,0 +1,35 @@
+{% extends "base/user.html" %}
+{% block title %}撰写文章{% endblock %}
+{% block head %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script src="/static/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+        window.onload = function()
+        {
+            CKEDITOR.replace('ckeditor');
+        };
+    </script>
+{% endblock %}
+{% block nav %}
+    <li><a href="{{ url_for('home', username=username) }}">返回个人中心</a></li>
+    <li><a href="{{ url_for('logout') }}">注销</a></li>
+<div>
+    <form action="{{ url_for('create_blog') }}" method="post">
+    {# if not action, request.args in ckupload #}
+        <p>标题：<input type="text" name="title" required /></p>
+        <p>标签：<input type="text" name="tag" required /></p>
+        <p>分类：<input type="text" name="type" value="" list="blog_types" required /></p>
+            <datalist id="blog_types">
+                {% for type in types %}
+                <option>{{ type }}</option>
+                {% endfor %}
+            </datalist>
+        <textarea name="ckeditor" id="ckeditor" type="textarea" class="ckeditor" rows="10" cols="200">
+            请在这里填写文章内容
+        </textarea>
+        <input type="submit" value="提交文章" />
+    </form>
+</div>
+
+{% endblock %}
+
