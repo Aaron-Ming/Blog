@@ -1,8 +1,0 @@
-tornado
-gevent
-flask
-MySQL-python
-torndb
-redis
-configobj
-s2p
