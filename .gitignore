@@ -64,4 +64,3 @@ target/
 #other
 *.log
 *.pid
-*.log.[123]
