@@ -1,8 +1,10 @@
 tornado
 gevent
 flask
+flask-RESTful
 MySQL-python
 torndb
 redis
 configobj
 s2p
+setproctitle

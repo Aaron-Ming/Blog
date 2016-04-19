@@ -18,14 +18,14 @@
       <div class="home">
         <!--头部-->
         <header class="home__header">
-          <img src="{% if data.get('avatar') %}{{ data.get('avatar') }}{% else %}{{ url_for('static', filename='images/profile.jpg') }}{% endif %}"/>
-          <h1>{% if data.get('cname') %}{{ data.get('cname') }}{% endif %}</h1><h2>{% if data.get('motto') %}{{ data.get('motto') }}{% endif %}</h2>
+            <img src="{% if data.get('avatar') %}{{ data.get('avatar') }}{% else %}{{ url_for('static', filename='images/profile.jpg') }}{% endif %}"/>
+            <h1>{% if data.get('cname') %}{{ data.get('cname') }}{% endif %}</h1><h2>{% if data.get('motto') %}{{ data.get('motto') }}{% endif %}</h2>
         </header>
         <!--导航页-->
         <nav class="home__header-nav">
-          <ul>
-            {% block nav %}{% endblock %}
-          </ul>
+            <ul>
+                {% block nav %}{% endblock %}
+            </ul>
         </nav>
         <!--页脚-->
         {% include "base/footer2.html" %}

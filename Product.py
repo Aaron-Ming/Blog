@@ -25,7 +25,7 @@ if Environment == 'product':
     if ProductType == 'gevent':
         from gevent.wsgi import WSGIServer
         http_server = WSGIServer((Host, Port), app)
-        logger.info('Blog has been launched, %s:%d' %(Host, Port))
+        logger.info('%s has been launched, %s:%d' %(ProcessName, Host, Port))
         http_server.serve_forever()
 
     elif ProductType == 'tornado':
@@ -34,7 +34,7 @@ if Environment == 'product':
         from tornado.ioloop import IOLoop
         http_server = HTTPServer(WSGIContainer(app))
         http_server.listen(Port)
-        logger.info('Blog has been launched, %s:%d' %(Host, Port))
+        logger.info('%s has been launched, %s:%d' %(ProcessName, Host, Port))
         IOLoop.instance().start()
 
     else:

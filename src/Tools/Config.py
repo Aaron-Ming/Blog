@@ -3,7 +3,7 @@ from configobj import ConfigObj
 from os.path import join,dirname,abspath,exists
 __all__ = ['MYSQL', 'PRODUCT', 'GLOBAL']
 
-GLOBAL, PRODUCT, MYSQL = {},{},{}
+GLOBAL, PRODUCT, MYSQL, BLOG = {},{},{},{}
 
 ConfigFile=join(dirname(dirname(abspath(__file__))), 'config.ini')
 if not exists(ConfigFile): raise OSError('No config file config.ini')
@@ -21,6 +21,8 @@ PRODUCT['ProcessName']     = ParserConfig('product', 'ProcessName')
 PRODUCT['ProductType']     = ParserConfig('product', 'ProductType')
 PRODUCT['ApplicationHome'] = ParserConfig('product', 'ApplicationHome')
 MYSQL['MySQLConnection']   = ParserConfigDict('mysql', 'MySQLConnection')
+#BLOG['NominateID']         = ParserConfigList('blog', 'NominateID')
+#BLOG['AdminGroup']         = ParserConfigList('blog', 'AdminGroup')
 
 if __name__ == "__main__":
     import json

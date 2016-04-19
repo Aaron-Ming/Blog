@@ -5,6 +5,7 @@ pidfile=/tmp/blog.pid
 
 case $1 in
 start)
+    [ -d ${dir}/src/logs/ ] || mkdir -p ${dir}/src/logs/
     if [ -f $pidfile ]; then
         if [[ $(ps aux | grep $(cat $pidfile) | grep -v grep | wc -l) -lt 1 ]]; then
             $(which python) -O ${dir}/Product.py &>> ${dir}/src/logs/access.log &

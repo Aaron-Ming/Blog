@@ -1,11 +1,7 @@
 ﻿{% extends "base/index.html" %}
 {% block title %}SaintIC Team Blog Indexer{% endblock %}
-{% block head %}
-    <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
-{% endblock %}
 {% block content %}
-<!--正文开始-->
-<div class="article">
+  <!--正文开始-->
   <div class="content">
     <div class="topblog"><!--推荐文章-->
       <h3><p><span>推荐</span>文章 Nominate</p></h3>
@@ -21,8 +17,9 @@
         <h2><span>博客</span>分类</h2>
         <ul>
           <li class="blogtype">分类</li>
-          <li><a href="/">div+css</a></li>
-          <li><a href="/">html5</a></li>
+          {% for class in classes %}
+          <li><a href="/">{{ class }}</a></li>
+          {% endfor %}
         </ul>
     </div>
 
@@ -30,76 +27,40 @@
         <h2><span>博客</span>标签</h2>
         <ul>
           <li class="blogtag">标签</li>
-          <li><a href="/">div+css</a></li>
-          <li><a href="/">html5</a></li>
-          <li><a href="/">saintic</a></li>
+          {% for tag in tags %}
+          <li><a href="/">{{ tag }}</a></li>
+          {% endfor %}
         </ul>
     </div>
 
     <div class="bloglist"><!--博文-->
+        {% for blog in blogs %}
         <!--An article begin-->
-        <h2><a href="/content/?383.html" target="_blank">文章标题1</a></h2>
+        <h2><a href="/blog/{{ blog.id }}.html" target="_blank">{{ blog.title }}</a></h2>
         <ul>
-          {{ test }}
+          {{ blog.content|safe }}
           <p class="readmore">
-              <a href="/content/?383.html" target="_blank">阅读全文>></a>
+              <a href="/blog/{{ blog.id }}.html" target="_blank">阅读全文>></a>
           </p>
           <p class="dateview">
-              <span>2013-05-11</span>
-              <span>作者：杨青</span>
-              <span>博客分类：<a href="#" target="_blank">心得笔记</a></span>
-              <span>博客标签：<a href="#" target="_blank">html5</a></span>
+              <span>{{ blog.time }}</span>
+              <span>作者：{{ blog.author }}</span>
+              {% if blog.class %}
+                  <span>博客分类：<a href="#" target="_blank">{{ blog.class }}</a></span>
+              {% endif %}
+              {% if blog.tag %}
+                  <span>博客标签：<a href="#" target="_blank">{{ blog.tag }}</a></span>
+              {% endif %}
               <span>阅读(229)</span><span>评论(124)</span>
           </p>
         </ul>
         <!--An article begin-->
-        <h2><a href="/content/?383.html" target="_blank">文章标题2</a></h2>
-        <ul>
-          文章内容
-          <p class="readmore">
-              <a href="/content/?383.html" target="_blank">阅读全文>></a>
-          </p>
-          <p class="dateview">
-              <span>2013-05-11</span>
-              <span>作者：杨青</span>
-              <span>博客分类：<a href="#" target="_blank">心得笔记</a></span>
-              <span>博客标签：<a href="#" target="_blank">html5</a></span>
-              <span>阅读(229)</span><span>评论(124)</span>
-          </p>
-        </ul>
-    </div> 
+        {% endfor %}
+    </div>
   </div>
-<!--正文结束-->
+  <!--正文结束-->
 {% endblock %}
 {% block aside %}
-<aside class="navsidebar">
-   <nav><!--右侧额外导航-->
-      <ul>
-       <li class="ab"><a href="#">关于我</a></li>
-       <li class="sy"><a href="#">碎言碎语</a></li>
-       <li class="js"><a href="#">技术探讨</a></li>
-       <li class="ly"><a href="#">留言版</a></li>
-       <li class="msh"><a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=HHh9cn95b3F1cHVye1xtbTJ-c3E" title="有话对我说">有话对我说</a></li>
-       <li class="xc"><a target="_blank" href="#" title="rss订阅">RSS</a></li>
-     </ul>
-   </nav>
-
-   <div class="geyan"><!--右侧导航栏下格言-->
-    <ul id="slider" class="slider">  
-      <li>个人or团队 格言1</li>
-    </ul>
-   </div>
-
-   <div class="vcard"><!--右侧导航栏下格言下个人or团队介绍-->
-      <a href="#" target="_blank"><img src="{{ url_for('static', filename='images/photo.jpg') }}" class="photo" height="124" width="93"></a>
-      <p class="fn">姓名：杨青</p>
-      <p class="nickname">网名：DanceSmile | 即步非烟</p>
-      <p class="url">主页：www.yangqq.com</p>
-      <p class="address">现居：天津市—滨海新区</p>
-      <p class="role">职业：网站设计、网站制作</p>
-   </div>
-   <br/>
-
    <div class="newbolg"><!--最新推荐-->
       <h2>最新日志</h2>
       <ul class="rank">
@@ -107,6 +68,7 @@
         <li class="nh2"><i></i><a target="_blank" href="#">外媒评十大正在消失的世界遗产 中国长城上榜</a></li>     
         <li class="nh3"><i></i><a target="_blank" href="#">沙漠里的奇葩 探秘鄂尔多斯财富迷局</a></li>     
         <!--<li class="n4"><i></i><a></a></li>-->
+        <!--<li class="n5"><i></i><a></a></li>-->
       </ul>
    </div>
 
@@ -143,5 +105,4 @@
       visitor1, visitor2
       </ul>
    </div>
-</aside>
 {% endblock %}

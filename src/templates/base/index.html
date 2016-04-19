@@ -8,6 +8,7 @@
     <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon" />
     <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="shortcut icon" type="image/x-icon" />
     <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
     <!--[if lt IE 9]>
         <script src="{{ url_for('static', filename='js/modernizr.js') }}"></script>
     <![endif]-->
@@ -21,11 +22,8 @@
 </header>
 <div id="nav">
      <ul>
-       <li><a href="{{ url_for('index') }}">网站首页</a></li>
-       <li><a href="{{ url_for('about') }}">关于我</a></li>
-       <li><a href="{{ url_for('moodlist') }}">碎言碎语</a></li>
-       <li><a href="{{ url_for('link') }}">友情链接</a></li>
-       <li><a href="{{ url_for('msg') }}">留言版</a></li>
+       <li><a href="{{ url_for('index') }}">首页</a></li>
+       <li><a href="{{ url_for('about') }}">关于</a></li>
        {% if session.get('loggin_in') %}
          {% if session.get('username') %}
              <li><a href="{{ url_for('home', username=session.get('username')) }}">个人中心</a></li>
@@ -39,8 +37,36 @@
      </ul>
 </div>
 <div class="blank"></div>
-{% block content %}{% endblock %}
-{% block aside %}{% endblock %}
+<!--article start-->
+<div class="article">
+  {% block content %}{% endblock %}
+  <aside class="navsidebar">
+    <div class="vcard"><!--右侧导航栏下格言下个人or团队介绍-->
+      <a><img src="{{ url_for('static', filename='images/org.jpg') }}" class="photo" height="100" width="100"></a>
+      <p class="fn">SaintIC</p>
+      <p class="url">www.saintic.com</p>
+      <p class="address">Beijing, China</p>
+      <p class="role">我们在运维、也在开发</p>
+    </div>
+    <br/>
+
+    <nav><!--右侧额外导航-->
+      <ul>
+       <li class="js"><a href="https://github.com/saintic" target="_blank">GitHub</a></li>
+       <li class="ly"><a href="#">留言版</a></li>
+       <li class="msh"><a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=JFdQRVFDUVZkUk1UClVVCkdLSQ" title="有话对我说">反馈</a></li>
+       <li class="xc"><a target="_blank" href="#" title="rss订阅">RSS</a></li>
+     </ul>
+    </nav>
+
+    <div class="geyan"><!--右侧导航栏下格言-->
+      <ul id="slider" class="slider">
+        <li>个人or团队 格言1</li>
+      </ul>
+    </div>
+
+    {% block aside %}{% endblock %}a
+  </aside>
 </div>
 {% include "base/footer1.html" %}
 <script src="{{ url_for('static', filename='js/silder.js') }}"></script>

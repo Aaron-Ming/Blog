@@ -63,19 +63,9 @@ def about():
     return render_template('index/about.html')
 
 # Friend Links
-@app.route('/link.html')
-def link():
-    return render_template('index/link.html')
-
-# 碎语
-@app.route('/moodlist.html')
-def moodlist():
-    return render_template('index/moodlist.html')
-
-# 留言
-@app.route('/msgboard.html')
-def msg():
-    return render_template('index/msgboard.html')
+@app.route('/blog.html')
+def blog():
+    return render_template('index/blog.html')
 
 # User Home Page View
 @app.route('/home/<username>')
@@ -183,7 +173,6 @@ def logout():
 @app.route('/home/blog/create/<username>', methods = ["GET", "POST"])
 def blog_create(username):
     return redirect(url_for('home', username=username, action='blog_create'))
-
 
 #创建用户
 @app.route('/home/user/create/<username>', methods = ["GET", "POST"])
