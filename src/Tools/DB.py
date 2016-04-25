@@ -46,8 +46,13 @@ class DB():
         return self.dbc.execute(sql)
 
 if __name__ == "__main__":
+    """
     sql="select class from blog"
     types = DB().get(sql)
     print types
     data = [ _type.get('class') for _type in types if _type.get('class')  ]
+    print data
+    """
+    sql="select * from blog limit 3"
+    data=DB().get(sql)
     print data

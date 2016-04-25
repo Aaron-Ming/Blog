@@ -22,7 +22,7 @@ start)
     ;;
 
 stop)
-    killall SICBlog
+    killall SIC.Blog
     retval=$?
     if [ $retval -eq 0 ]; then
         rm -f $pidfile

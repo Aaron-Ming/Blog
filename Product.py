@@ -1,9 +1,9 @@
 #!/usr/bin/python -O
 #product environment start application with `tornado IOLoop` and `gevent server`
 
-from src.blog import app
+from src.api import app
 from src.Tools.LOG import Syslog
-from src.Tools.Config import GLOBAL,PRODUCT
+from src.config import GLOBAL,PRODUCT
 
 Host = str(GLOBAL.get('Host'))
 Port = int(GLOBAL.get('Port'))
@@ -20,8 +20,11 @@ try:
 except ImportError, e:
     logger.warn("%s, try to pip install setproctitle, otherwise, you can't use the process to customize the function" %e)
 
-if Environment == 'product':
+if Environment != 'product':
+    logger.error("%s isn't product, exit." % Environment)
+    exit(128)  
 
+try:
     if ProductType == 'gevent':
         from gevent.wsgi import WSGIServer
         http_server = WSGIServer((Host, Port), app)
@@ -40,5 +43,6 @@ if Environment == 'product':
     else:
         logger.error('Start the program does not support with %s, abnormal exit!' %ProductType)
         exit(127)
-else:
-    logger.error("%s isn't product, exit." % Environment)
+except Exception,e:
+    print e
+    logger.error(e)

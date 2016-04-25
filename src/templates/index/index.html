@@ -7,7 +7,7 @@
       <h3><p><span>推荐</span>文章 Nominate</p></h3>
       <img src="{{ url_for('static', filename='images/newpics.jpg') }}" title="" width="315" height="205">
       <ul>
-        <li><a href="/">标题1<span>世界上最幸福的国家是...</span></a></li>
+        <li><a href="{{ url_for('api_blog') }}">标题1<span>世界上最幸福的国家是...</span></a></li>
         <li><a href="/">标题2<span>世界上最幸福的国家是...</span></a></li>
         <li><a href="/">标题3<span>世界上最幸福的国家是...</span></a></li>
       </ul>
@@ -36,11 +36,11 @@
     <div class="bloglist"><!--博文-->
         {% for blog in blogs %}
         <!--An article begin-->
-        <h2><a href="/blog/{{ blog.id }}.html" target="_blank">{{ blog.title }}</a></h2>
+        <h2><a href="/blog/{{ blog.id }}.html">{{ blog.title }}</a></h2>
         <ul>
           {{ blog.content|safe }}
           <p class="readmore">
-              <a href="/blog/{{ blog.id }}.html" target="_blank">阅读全文>></a>
+              <a href="/blog/{{ blog.id }}.html">阅读全文>></a>
           </p>
           <p class="dateview">
               <span>{{ blog.time }}</span>

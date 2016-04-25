@@ -75,20 +75,24 @@
         {% elif request.args.get('action') == "list" %}
                 <script type="text/javascript">
                     function loadajax(url) {
-                        /*
                         $.ajax({
-                        url: url,
-                        method: 'POST',
-                        datatype: 'json',
-                        success: function(res){
-                            console.log(typeof(res));
-                            document.getElementById('tishi').innerHTML=res;
+                            url: url,
+                            method: 'GET',
+                            datatype: 'json',
+                            success: function(res) {
+                                console.log(res);
+                                var user=new Array();
+                                var data=res.data;
+                                for(i=0; i<data.length; i++) {
+                                  user[i]=data[i].username;
+                                };
+                                document.getElementById('tishi').innerHTML=user;
                             },
-                        error: function(error){
-                            alert(error);
+                            error: function(error){
+                                alert(error);
                             }
                         });
-                        */
+                        /*
                         $.getJSON(url).done(function (data) {
                             var user = new Array();
                             for(i=0; i<data.msg.length; i++) {
@@ -97,9 +101,11 @@
                             };
                             document.getElementById('tishi').innerHTML=user; 
                         });
+                        */
                     };
                 </script>
-            <p><button onclick="loadajax('{{ url_for('user_list', username=username) }}')">获取</button>
+            <!--<p><button onclick="loadajax('{{ url_for('user_list', username=username) }}')">获取</button>-->
+            <p><button onclick="loadajax('{{ url_for('api_user') }}')">获取</button>
             <p><span id="tishi"></span></p>
 
         {% elif request.args.get('action') == "create" %}

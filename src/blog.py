@@ -63,9 +63,15 @@ def about():
     return render_template('index/about.html')
 
 # Friend Links
-@app.route('/blog.html')
-def blog():
-    return render_template('index/blog.html')
+@app.route('/blog/<int:bid>.html')
+def blog(bid):
+    sql="SELECT title,author,time,content,tag,class FROM blog where id=%d" %int(bid)
+    try:
+        data=mysql.get(sql)
+        logger.info({"func:blog:SQL":sql})
+    except Exception,e:
+        logger.error(e)
+    return render_template('index/blog.html', bid=bid, blog=data)
 
 # User Home Page View
 @app.route('/home/<username>')
@@ -319,16 +325,4 @@ def not_found(error):
     return render_template('public/404.html')
 
 if __name__ == '__main__':
-    from Tools.Config import GLOBAL
-    Host = GLOBAL.get('Host')
-    Port = GLOBAL.get('Port')
-    Environment = GLOBAL.get('Environment')
-    Debug = GLOBAL.get('Debug')
-
-    if Environment == "dev":
-        app.run(host=Host, port=int(Port), debug=Debug)
-    elif Environment == "super debug":
-        from werkzeug.contrib.profiler import ProfilerMiddleware
-        app.config['PROFILE'] = True
-        app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions = [30])
-        app.run(debug=Debug, host=Host, port=int(Port))
+    print u"请运行api.py启动"
