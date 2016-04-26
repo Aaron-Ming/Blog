@@ -38,7 +38,7 @@
         <!--An article begin-->
         <h2><a href="/blog/{{ blog.id }}.html">{{ blog.title }}</a></h2>
         <ul>
-          {{ blog.content|safe }}
+          {{ blog.content[:160] | safe }}
           <p class="readmore">
               <a href="/blog/{{ blog.id }}.html">阅读全文>></a>
           </p>

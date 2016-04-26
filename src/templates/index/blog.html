@@ -38,14 +38,17 @@
             });
         });
     </script>
-<div>
-<h2>{{ blog.title }}</h2>
+
+<div style="font-size:16px, font-weight=font">
+  <center><h2>{{ blog.title }}</h2></center>
   <h4>作者: {{ blog.author }}</h4>
   <h4>时间: {{ blog.time }}</h4>
   <h4>标签: {{ blog.tag }}</h4>
   <h4>分类: {{ blog.class }}</h4>
   {{ blog.content|safe }}
+  {# blog.content[:180].replace(r'&nbsp&;', '\t').replace(r'&enter&;', '\n').replace(r'&enter&', '\n')|safe #}
 </div>
+
 <div class="blank"></div>
 <script language="javascript" type="text/javascript">
 var obj=null;
