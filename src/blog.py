@@ -115,6 +115,7 @@ def create_blog():
             classtype = request.form.get('type')
             sql="insert into blog (title,author,time,content,tag,class) values('%s','%s','%s','%s','%s','%s')" %(title,author,time,content,tag,classtype)
             logger.info(sql)
+            #此处需要重写DB类的insert方法，用(sql, arg1, arg2, ...)插入数据库中避免错误
             try:
                 mysql.insert(sql)
             except AttributeError:
