@@ -12,7 +12,7 @@
     <h4>标签: {{ blog.tag }}</h4>
     <h4>分类: {{ blog.class }}</h4>
   <ul>
-    {{ blog.content|safe}}
+    {{ blog.content }}
     {# blog.content[:180].replace(r'&nbsp&;', '\t').replace(r'&enter&;', '\n').replace(r'&enter&', '\n')|safe #}
   </ul>
 </div>

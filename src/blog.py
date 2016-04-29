@@ -9,7 +9,7 @@ import datetime
 from Tools.DB import DB
 from Tools.LOG import Syslog
 from werkzeug import secure_filename
-from flask import Flask, request, session, render_template, redirect, url_for, send_from_directory
+from flask import Flask, request, session, render_template, redirect, url_for, send_from_directory, Response
 
 __version__ = '0.2'
 __doc__ = 'Python Blog System for SIC(Team).'
@@ -40,6 +40,11 @@ def allowed_file(filename):
 
 # 文本编辑器上传定义随机命名
 gen_rnd_filename = lambda :"%s%s" %(datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(random.randrange(1000, 10000)))
+
+@app.before_request
+def before_request():
+    log = json.dumps({"status_code": Response.default_status, "method": request.method, "ip": request.remote_addr, "url": request.url, "referer": request.headers.get('Referer'), "agent": request.headers.get("User-Agent")})
+    logger.info(log)
 
 # BLOG Index Page View
 @app.route('/')
