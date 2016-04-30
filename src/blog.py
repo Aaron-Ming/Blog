@@ -52,7 +52,8 @@ def index():
     sql="SELECT id,title,author,time,content,tag,class FROM blog"
     logger.info(sql)
     data=mysql.get(sql)
-    tags=[ d.get('tag') for d in data if d.get('tag') ]
+    tags=[ d.get('tag').replace("'", "") for d in data if d.get('tag') ]
+    logger.debug({"tags": tags})
     sql="SELECT ClassName FROM class"
     logger.info(sql)
     types=mysql.get(sql)
