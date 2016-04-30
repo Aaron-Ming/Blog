@@ -52,15 +52,13 @@ def index():
     sql="SELECT id,title,author,time,content,tag,class FROM blog"
     logger.info(sql)
     data=mysql.get(sql)
-    tags=[ d.get('tag').replace("'", "") for d in data if d.get('tag') ]
-    logger.debug({"tags": tags})
+    tags=list(set([ d.get('tag').replace("'", "") for d in data if d.get('tag') ]))
     sql="SELECT ClassName FROM class"
     logger.info(sql)
     types=mysql.get(sql)
     classes=[ _type.get('ClassName') for _type in types if _type.get('ClassName') ]
-    logger.debug(tags)
-    logger.debug(classes)
-    logger.debug(data)
+    logger.debug({"tags": tags})
+    logger.debug({"classes": classes})
     return render_template('index/index.html', username=username, blogs=data, tags=tags, classes=classes)
 
 # About Us
