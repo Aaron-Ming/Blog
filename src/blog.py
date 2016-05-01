@@ -8,13 +8,13 @@ import random
 import datetime
 from Tools.DB import DB
 from Tools.LOG import Syslog
+from config import BLOG
 from werkzeug import secure_filename
 from flask import Flask, request, session, render_template, redirect, url_for, send_from_directory, Response
 
-__version__ = '0.2'
+__version__ = '0.3'
 __doc__ = 'Python Blog System for SIC(Team).'
 __author__ = 'Mr.Tao <staugurtcw@gmail.com>'
-
 
 # Init Flask App and Global Args
 app = Flask(__name__)
@@ -41,12 +41,21 @@ def allowed_file(filename):
 # 文本编辑器上传定义随机命名
 gen_rnd_filename = lambda :"%s%s" %(datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(random.randrange(1000, 10000)))
 
+Nominate={}
+for nid in BLOG.get('NominateID', (1,)):
+    #根据推荐id导出博客信息
+    sql="SELECT id,title,content FROM blog WHERE id=%d" %nid
+    try:
+        data=mysql.get(sql)
+        Nominate[nid]={"nid":nid, "title":data.get('title'), "content":data.get('content')[:10]}
+    except Exception,e:
+        logger.error(e)
+    logger.info({"sql":sql, "title_id":nid})
+logger.debug(Nominate)
+
 @app.before_request
 def before_request():
-    real_ip = request.headers.get('X-Real-Ip', request.remote_addr)
-    login_user = session.get('username', None)
-    log = json.dumps({"login_user":login_user, "status_code": Response.default_status, "method": request.method, "ip": real_ip, "url": request.url, "referer": request.headers.get('Referer'), "agent": request.headers.get("User-Agent")})
-    logger.info(log)
+    logger.info(json.dumps({"login_user": session.get('username', None), "status_code": Response.default_status, "method": request.method, "ip": request.headers.get('X-Real-Ip', request.remote_addr), "url": request.url, "referer": request.headers.get('Referer'), "agent": request.headers.get("User-Agent")}))
 
 # BLOG Index Page View
 @app.route('/')
@@ -55,13 +64,15 @@ def index():
     logger.info(sql)
     data=mysql.get(sql)
     tags=list(set([ d.get('tag').replace("'", "") for d in data if d.get('tag') ]))
+    logger.debug({"tags": tags})
+
     sql="SELECT ClassName FROM class"
     logger.info(sql)
     types=mysql.get(sql)
     classes=[ _type.get('ClassName') for _type in types if _type.get('ClassName') ]
-    logger.debug({"tags": tags})
     logger.debug({"classes": classes})
-    return render_template('index/index.html', username=username, blogs=data, tags=tags, classes=classes)
+
+    return render_template('index/index.html', username=username, blogs=data, tags=tags, classes=classes, Nominate=Nominate.values())
 
 # About Us
 @app.route('/about.html')

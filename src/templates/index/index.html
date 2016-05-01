@@ -7,9 +7,10 @@
       <h3><p><span>推荐</span>文章 Nominate</p></h3>
       <img src="{{ url_for('static', filename='images/newpics.jpg') }}" title="" width="315" height="205">
       <ul>
-        <li><a href="{{ url_for('api_blog') }}">标题1<span>世界上最幸福的国家是...</span></a></li>
-        <li><a href="/">标题2<span>世界上最幸福的国家是...</span></a></li>
-        <li><a href="/">标题3<span>世界上最幸福的国家是...</span></a></li>
+          {% for nid in Nominate %}
+          {{ nid }}
+          <li><a href="/blog/{{ nid.get('nid') }}.html">{{ nid.get('title') }}<span>{{ nid.get('content') }}</span></a></li>
+          {% endfor %}
       </ul>
     </div> 
 
