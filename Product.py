@@ -6,7 +6,7 @@ from src.Tools.LOG import Syslog
 from src.config import GLOBAL,PRODUCT
 
 Host = str(GLOBAL.get('Host'))
-Port = int(GLOBAL.get('Port'))
+Port = GLOBAL.get('Port')
 Environment = GLOBAL.get('Environment')
 ProcessName = PRODUCT.get('ProcessName')
 ProductType = PRODUCT.get('ProductType')
@@ -18,6 +18,7 @@ try:
         setproctitle.setproctitle(ProcessName)
         logger.info("The process is %s" % ProcessName)
 except ImportError, e:
+    ProcessName = None
     logger.warn("%s, try to pip install setproctitle, otherwise, you can't use the process to customize the function" %e)
 
 if Environment != 'product':
@@ -25,10 +26,10 @@ if Environment != 'product':
     exit(128)  
 
 try:
+    logger.info('%s has been launched, %s:%d' %(ProcessName, Host, Port))
     if ProductType == 'gevent':
         from gevent.wsgi import WSGIServer
         http_server = WSGIServer((Host, Port), app)
-        logger.info('%s has been launched, %s:%d' %(ProcessName, Host, Port))
         http_server.serve_forever()
 
     elif ProductType == 'tornado':
@@ -37,12 +38,12 @@ try:
         from tornado.ioloop import IOLoop
         http_server = HTTPServer(WSGIContainer(app))
         http_server.listen(Port)
-        logger.info('%s has been launched, %s:%d' %(ProcessName, Host, Port))
         IOLoop.instance().start()
 
     else:
         logger.error('Start the program does not support with %s, abnormal exit!' %ProductType)
         exit(127)
+
 except Exception,e:
     print e
     logger.error(e)

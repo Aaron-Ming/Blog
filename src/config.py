@@ -14,7 +14,7 @@ GLOBAL={
 #  Application run network address, you can set it `0.0.0.0`, `127.0.0.1`, ``, `None`;
 #  Default run on all network interfaces.
 
-"Port": 8000,
+"Port": 10000,
 #  Application run port, default port;
 
 "Debug": True,

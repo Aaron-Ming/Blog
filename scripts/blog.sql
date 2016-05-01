@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
 --
--- Host: localhost    Database: blog
+-- Host: 127.0.0.1    Database: blog
 -- ------------------------------------------------------
 -- Server version	5.1.73
 
@@ -16,6 +16,14 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Current Database: `blog`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `blog` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+USE `blog`;
+
+--
 -- Table structure for table `blog`
 --
 
@@ -26,23 +34,36 @@ CREATE TABLE `blog` (
   `id` int(4) NOT NULL AUTO_INCREMENT COMMENT 'BlogID',
   `title` varchar(30) NOT NULL COMMENT '文章标题',
   `author` varchar(20) NOT NULL COMMENT '文章作者',
-  `time` datetime NOT NULL COMMENT '文章日期',
-  `content` varchar(255) NOT NULL COMMENT '文章',
-  `tag` varchar(10) DEFAULT NULL COMMENT '文章标签',
+  `time` varchar(15) DEFAULT NULL COMMENT '文章日期',
+  `content` varchar(10000) NOT NULL COMMENT '文章',
+  `tag` varchar(20) DEFAULT NULL COMMENT '文章标签',
   `class` varchar(10) DEFAULT NULL COMMENT '文章分类',
   PRIMARY KEY (`id`),
   KEY `id` (`id`,`author`,`time`,`tag`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `blog`
+-- Table structure for table `class`
 --
 
-LOCK TABLES `blog` WRITE;
-/*!40000 ALTER TABLE `blog` DISABLE KEYS */;
-INSERT INTO `blog` VALUES (1,'My Test Page Blog','admin','2016-03-25 00:00:00','TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest','test','myclass'),(2,'My Test2 Page Blog','admin','2016-03-26 23:35:00','HelloWorld','test','myclass');
-/*!40000 ALTER TABLE `blog` ENABLE KEYS */;
+DROP TABLE IF EXISTS `class`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `class` (
+  `ClassName` varchar(10) NOT NULL,
+  KEY `ClassName` (`ClassName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `class`
+--
+
+LOCK TABLES `class` WRITE;
+/*!40000 ALTER TABLE `class` DISABLE KEYS */;
+INSERT INTO `class` VALUES ('Linux'),('Python'),('Windows');
+/*!40000 ALTER TABLE `class` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -64,7 +85,7 @@ CREATE TABLE `user` (
   `extra` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +94,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'admin','8879168cbf8a9e11c296530803e93308','St.augur','staugur@saintic.com','/static/uploads/profile.jpg','原谅我一生放荡不羁爱自由','https://saintic.com','Python Flask写的博客'),(6,'hello','e10adc3949ba59abbe56e057f20f883e',NULL,NULL,NULL,NULL,NULL,NULL),(7,'test','e10adc3949ba59abbe56e057f20f883e','AngleBaby',NULL,'/static/uploads/QQ20160322131113.jpg',NULL,NULL,NULL);
+INSERT INTO `user` VALUES (1,'admin','8879168cbf8a9e11c296530803e93308','陶成伟','staugur@saintic.com','/static/upload/hacker.jpg','原谅我一生放荡不羁爱自由','https://www.saintic.com','Python Flask 博客'),(9,'test1','8879168cbf8a9e11c296530803e93308',NULL,NULL,'/static/upload/mmexport1462070594047.jpg',NULL,NULL,NULL),(10,'test','098f6bcd4621d373cade4e832627b4f6',NULL,NULL,'/static/upload/mmexport1462071607347.jpg',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -86,4 +107,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-29 15:10:15
+-- Dump completed on 2016-05-01 12:56:53

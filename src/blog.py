@@ -43,7 +43,9 @@ gen_rnd_filename = lambda :"%s%s" %(datetime.datetime.now().strftime('%Y%m%d%H%M
 
 @app.before_request
 def before_request():
-    log = json.dumps({"status_code": Response.default_status, "method": request.method, "ip": request.remote_addr, "url": request.url, "referer": request.headers.get('Referer'), "agent": request.headers.get("User-Agent")})
+    real_ip = request.headers.get('X-Real-Ip', request.remote_addr)
+    login_user = session.get('username', None)
+    log = json.dumps({"login_user":login_user, "status_code": Response.default_status, "method": request.method, "ip": real_ip, "url": request.url, "referer": request.headers.get('Referer'), "agent": request.headers.get("User-Agent")})
     logger.info(log)
 
 # BLOG Index Page View
