@@ -42,6 +42,25 @@ allowd_file = lambda filename:'.' in filename and filename.rsplit('.', 1)[1] in 
 # 文本编辑器上传定义随机命名
 gen_rnd_filename = lambda :"%s%s" %(datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(random.randrange(1000, 10000)))
 
+"""
+#基于调度的方法
+#http://docs.jinkan.org/docs/flask/views.html
+from flask.views import MethodView
+
+class UserAPI(MethodView):
+
+    def get(self):
+        users = User.query.all()
+        ...
+
+    def post(self):
+        user = User.from_form_data(request.form)
+        ...
+
+app.add_url_rule('/users/', view_func=UserAPI.as_view('users'))
+"""
+
+
 def NIT():
     Nominate={}
     html = re.compile(r'<[^>]+>',re.S)
