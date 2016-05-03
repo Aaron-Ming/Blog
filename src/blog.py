@@ -90,10 +90,18 @@ def index():
     logger.debug({"classes": classes})
 
     return render_template('index/index.html', username=username, blogs=data, tags=tags, classes=classes, Nominate=NIT().values())
-# Google check for Search Console
+# Google check for Search Console, robots.txt, sitemap
 @app.route('/google32fd52b6c900160b.html')
 def google_search_console():
     return render_template('public/google32fd52b6c900160b.html')
+
+@app.route('/robots.txt')
+def robots():
+    return render_template('public/robots.txt')
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return render_template('public/sitemap.xml')
 
 # About Us
 @app.route('/about.html')
