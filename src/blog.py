@@ -35,27 +35,44 @@ md5 = lambda pwd:hashlib.md5(pwd).hexdigest()
 today = lambda :datetime.datetime.now().strftime("%Y-%m-%d")
 
 # 用户上传文件验证类型
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+#def allowed_file(filename):
+#    return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+allowd_file = lambda filename:'.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 # 文本编辑器上传定义随机命名
 gen_rnd_filename = lambda :"%s%s" %(datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(random.randrange(1000, 10000)))
 
-Nominate={}
-for nid in BLOG.get('NominateID', (1,)):
-    #根据推荐id导出博客信息
-    sql="SELECT id,title,content FROM blog WHERE id=%d" %nid
-    try:
-        data=mysql.get(sql)
-        Nominate[nid]={"nid":nid, "title":data.get('title'), "content":data.get('content')[:10]}
-    except Exception,e:
-        logger.error(e)
-    logger.info({"sql":sql, "title_id":nid})
-logger.debug(Nominate)
+def NIT():
+    Nominate={}
+    html = re.compile(r'<[^>]+>',re.S)
+    for nid in BLOG.get('NominateID', (1, 2, 3))[:3]:
+        #根据推荐id导出博客信息
+        sql="SELECT id,title,content FROM blog WHERE id=%d" %nid
+        try:
+            data=mysql.get(sql)
+            content=html.sub('', data.get('content')[:35])
+            Nominate[nid]={"nid":nid, "title":data.get('title'), "content":content}
+        except Exception,e:
+            logger.error(e)
+        else:
+            logger.debug({"nid":nid, "title":data.get('title'), "content":content})
+    logger.info(Nominate)
+    return Nominate
 
 @app.before_request
 def before_request():
-    logger.info(json.dumps({"login_user": session.get('username', None), "status_code": Response.default_status, "method": request.method, "ip": request.headers.get('X-Real-Ip', request.remote_addr), "url": request.url, "referer": request.headers.get('Referer'), "agent": request.headers.get("User-Agent")}))
+    logger.info(json.dumps({
+        "AccessLog": {
+            "login_user": session.get('username', None),
+            "status_code": Response.default_status,
+            "method": request.method,
+            "ip": request.headers.get('X-Real-Ip', request.remote_addr),
+            "url": request.url,
+            "referer": request.headers.get('Referer'),
+            "agent": request.headers.get("User-Agent"),
+            }
+        }
+    ))
 
 # BLOG Index Page View
 @app.route('/')
@@ -72,7 +89,11 @@ def index():
     classes=[ _type.get('ClassName') for _type in types if _type.get('ClassName') ]
     logger.debug({"classes": classes})
 
-    return render_template('index/index.html', username=username, blogs=data, tags=tags, classes=classes, Nominate=Nominate.values())
+    return render_template('index/index.html', username=username, blogs=data, tags=tags, classes=classes, Nominate=NIT().values())
+# Google check for Search Console
+@app.route('/google32fd52b6c900160b.html')
+def google_search_console():
+    return render_template('public/google32fd52b6c900160b.html')
 
 # About Us
 @app.route('/about.html')

@@ -1,6 +1,20 @@
 ﻿{% extends "base/index.html" %}
 {% block title %}SaintIC Team Blog Indexer{% endblock %}
 {% block content %}
+  <div>
+<script>
+  (function() {
+    var cx = '009741766366936003815:jfv5jmieqo8';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+<gcse:search></gcse:search>
+  </div>
   <!--正文开始-->
   <div class="content">
     <div class="topblog"><!--推荐文章-->
@@ -8,7 +22,6 @@
       <img src="{{ url_for('static', filename='images/newpics.jpg') }}" title="" width="315" height="205">
       <ul>
           {% for nid in Nominate %}
-          {{ nid }}
           <li><a href="/blog/{{ nid.get('nid') }}.html">{{ nid.get('title') }}<span>{{ nid.get('content') }}</span></a></li>
           {% endfor %}
       </ul>
