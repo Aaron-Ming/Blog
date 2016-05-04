@@ -1,0 +1,21 @@
+<header>
+  <img src="{{ url_for('static', filename='images/logo.png') }}" title="SaintIC Team Logo">
+  <h1><a href="{{ url_for('index') }}">SaintIC Team Blog</a></h1>
+  <p>简简单单的团队技术博客，记录每个成员、记录每个技术、记录每个人生！</p>
+</header>
+<div id="nav">
+     <ul>
+       <li><a href="{{ url_for('index') }}">首页</a></li>
+       <li><a href="{{ url_for('about') }}">关于</a></li>
+       {% if session.get('loggin_in') %}
+         {% if session.get('username') %}
+             <li><a href="{{ url_for('home', username=session.get('username')) }}">个人中心</a></li>
+         {% else %}
+             <li><a href="{{ url_for('home', username=username) }}">个人中心</a></li>
+         {% endif %}
+         <li><a href="{{ url_for('logout') }}">注销</a></li>
+       {% else %}
+         <li><a href="{{ url_for('login') }}">登录</a></li>
+       {% endif %}
+     </ul>
+</div>

@@ -35,9 +35,7 @@ md5 = lambda pwd:hashlib.md5(pwd).hexdigest()
 today = lambda :datetime.datetime.now().strftime("%Y-%m-%d")
 
 # 用户上传文件验证类型
-#def allowed_file(filename):
-#    return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
-allowd_file = lambda filename:'.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+allowed_file = lambda filename:'.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 # 文本编辑器上传定义随机命名
 gen_rnd_filename = lambda :"%s%s" %(datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(random.randrange(1000, 10000)))
@@ -46,17 +44,13 @@ gen_rnd_filename = lambda :"%s%s" %(datetime.datetime.now().strftime('%Y%m%d%H%M
 #基于调度的方法
 #http://docs.jinkan.org/docs/flask/views.html
 from flask.views import MethodView
-
 class UserAPI(MethodView):
-
     def get(self):
         users = User.query.all()
         ...
-
     def post(self):
         user = User.from_form_data(request.form)
         ...
-
 app.add_url_rule('/users/', view_func=UserAPI.as_view('users'))
 """
 
@@ -125,7 +119,11 @@ def sitemap():
 # About Us
 @app.route('/about.html')
 def about():
-    return render_template('index/about.html')
+    return render_template('index/about.html', AboutContent=BLOG.get('AboutContent'))
+
+@app.route('/link')
+def link():
+    return render_template('index/link.html')
 
 # Friend Links
 @app.route('/blog/<int:bid>.html')
@@ -136,7 +134,7 @@ def blog(bid):
         logger.info({"func:blog:SQL":sql})
     except Exception,e:
         logger.error(e)
-    return render_template('index/blog.html', bid=bid, blog=data)
+    return render_template('index/link.html', bid=bid, blog=data)
 
 # User Home Page View
 @app.route('/home/<username>')
