@@ -7,6 +7,9 @@
      <ul>
        <li><a href="{{ url_for('index') }}">首页</a></li>
        <li><a href="{{ url_for('about') }}">关于</a></li>
+       <li><a href="https://github.com/saintic" target="_blank" title="GitHub Org">GitHub</a></li>
+       <li><a href="#">RSS</a></li>
+       <li><a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=JFdQRVFDUVZkUk1UClVVCkdLSQ" title="有话对我说">反馈</a></li>
        {% if session.get('loggin_in') %}
          {% if session.get('username') %}
              <li><a href="{{ url_for('home', username=session.get('username')) }}">个人中心</a></li>

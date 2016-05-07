@@ -32,17 +32,17 @@
 
     <nav><!--右侧额外导航-->
       <ul>
-       <li class="js"><a href="https://github.com/saintic" target="_blank" alt="GitHub" title="SaintIC GitHub">SaintIC</a></li>
+       <li class="js"><a href="http://docs.saintic.com" target="_blank">文档</a></li>
        <li class="ab"><a href="https://github.com/staugur" target="_blank" title="The website author GitHub">staugur</a></li>
-       <li class="ly"><a href="#">留言版</a></li>
-       <li class="msh"><a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=JFdQRVFDUVZkUk1UClVVCkdLSQ" title="有话对我说">反馈</a></li>
-       <li class="xc"><a target="_blank" href="#" title="rss订阅">RSS</a></li>
+       <li class="ly"><a href="http://saintic.github.io" target="_blank">GitHub.io</a></li>
+       <li class="msh"><a href="https://me.saintic.com" target="_blank">Me</a></li>
+       <li class="xc"><a target="_blank" href="https://pypi.python.org/pypi/s2p" title="Pypi库">Pypi</a></li>
      </ul>
     </nav>
 
     <div class="geyan"><!--右侧导航栏下格言-->
       <ul id="slider" class="slider">
-        <li>个人or团队 格言1</li>
+        <li>{% if teammotto %}{{ teammotto }}{% else %}原谅我一生放荡不羁爱自由{% endif %}</li>
       </ul>
     </div>
 

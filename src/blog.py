@@ -90,7 +90,7 @@ def before_request():
 # BLOG Index Page View
 @app.route('/')
 def index():
-    sql="SELECT id,title,author,time,content,tag,class FROM blog"
+    sql="SELECT id,title,author,time,content,tag,class FROM blog LIMIT %d" %int(BLOG.get('IndexPageNum', 5))
     logger.info(sql)
     data=mysql.get(sql)
     tags=list(set([ d.get('tag').replace("'", "") for d in data if d.get('tag') ]))
@@ -102,7 +102,8 @@ def index():
     classes=[ _type.get('ClassName') for _type in types if _type.get('ClassName') ]
     logger.debug({"classes": classes})
 
-    return render_template('index/index.html', username=username, blogs=data, tags=tags, classes=classes, Nominate=NIT().values())
+    return render_template('index/index.html', username=username, blogs=data, tags=tags, classes=classes, Nominate=NIT().values(), teammotto=BLOG.get('TeamMotto'))
+
 # Google check for Search Console, robots.txt, sitemap
 @app.route('/google32fd52b6c900160b.html')
 def google_search_console():
