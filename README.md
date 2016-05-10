@@ -1,6 +1,6 @@
-# SICBlog
+# Blog
 
-SIC团队博客
+Team or Person Blog
 
 ## 协议
 
