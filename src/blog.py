@@ -40,21 +40,6 @@ allowed_file = lambda filename:'.' in filename and filename.rsplit('.', 1)[1] in
 # 文本编辑器上传定义随机命名
 gen_rnd_filename = lambda :"%s%s" %(datetime.datetime.now().strftime('%Y%m%d%H%M%S'), str(random.randrange(1000, 10000)))
 
-"""
-#基于调度的方法
-#http://docs.jinkan.org/docs/flask/views.html
-from flask.views import MethodView
-class UserAPI(MethodView):
-    def get(self):
-        users = User.query.all()
-        ...
-    def post(self):
-        user = User.from_form_data(request.form)
-        ...
-app.add_url_rule('/users/', view_func=UserAPI.as_view('users'))
-"""
-
-
 def NIT():
     Nominate={}
     html = re.compile(r'<[^>]+>',re.S)
@@ -90,19 +75,25 @@ def before_request():
 # BLOG Index Page View
 @app.route('/')
 def index():
-    sql="SELECT id,title,author,time,content,tag,class FROM blog LIMIT %d" %int(BLOG.get('IndexPageNum', 5))
-    logger.info(sql)
+    """获取分页文章，包括文章id、标题、作者、创作时间和内容，分页大小限制通过config.py配置文件中IndexPageNum控制，默认数量为5"""
+    sql="SELECT id,title,author,time,content FROM blog LIMIT %d" %int(BLOG.get('IndexPageNum', 5))
+    logger.info({"Index:Blog:SQL":sql})
     data=mysql.get(sql)
-    tags=list(set([ d.get('tag').replace("'", "") for d in data if d.get('tag') ]))
-    logger.debug({"tags": tags})
+
+    "从数据库中获取所有tag，将其结果转化为list"
+    sql="SELECT tag FROM blog"
+    logger.info({'Index:Tag:SQL':sql})
+    tags=mysql.get(sql)
+    tags=list(set([ d.get('tag').replace("'", "") for d in tags if d.get('tag') ]))
+    logger.debug({'tags':tags})
 
     sql="SELECT ClassName FROM class"
-    logger.info(sql)
+    logger.info({'Index:Class:SQL':sql})
     types=mysql.get(sql)
     classes=[ _type.get('ClassName') for _type in types if _type.get('ClassName') ]
     logger.debug({"classes": classes})
 
-    return render_template('index/index.html', username=username, blogs=data, tags=tags, classes=classes, Nominate=NIT().values(), teammotto=BLOG.get('TeamMotto'))
+    return render_template('index/index.html', username=username, blogs=data, tags=tags, classes=classes, Nominate=NIT().values(), teammotto=BLOG.get('TeamMotto'), teamlogo=BLOG.get('TeamLogo'), teamname=BLOG.get('TeamName'), teamurl=BLOG.get('TeamURL'))
 
 # Google check for Search Console, robots.txt, sitemap
 @app.route('/google32fd52b6c900160b.html')

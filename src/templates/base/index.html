@@ -22,9 +22,9 @@
   {% block content %}{% endblock %}
   <aside class="navsidebar">
     <div class="vcard"><!--右侧导航栏下格言下个人or团队介绍-->
-      <a><img src="{{ url_for('static', filename='images/org.jpg') }}" class="photo" height="100" width="100"></a>
-      <p class="fn">SaintIC</p>
-      <p class="url">www.saintic.com</p>
+      <a><img src="{% if teamlogo %}{{ teamlogo }}{% else %}{{ url_for('static', filename='images/org.jpg') }}{% endif %}" class="photo" height="100" width="100"></a>
+      <p class="fn">{% if teamname %}{{ teamname }}{% else %}SaintIC{% endif %}</p>
+      <p class="url"><a href="{% if teamurl %}{{ teamurl }}{% else %}www.saintic.com{% endif %}" target="_blank">{% if teamurl %}{{ teamurl }}{% else %}www.saintic.com{% endif %}</a></p>
       <p class="address">Beijing, China</p>
       <p class="role">我们在运维、也在开发</p>
     </div>
